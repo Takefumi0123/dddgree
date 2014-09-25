@@ -1,4 +1,4 @@
-Renesas Optimizing Linker (W1.01.00 )             19-Sep-2014 19:22:40
+Renesas Optimizing Linker (W1.01.00 )             24-Sep-2014 15:18:11
 
 *** Options ***
 
@@ -66,17 +66,17 @@ D_2
 D
                                   ffff8a40  ffff8e2b       3ec   4
 P
-                                  ffff8e2c  ffffcdb9      3f8e   1
+                                  ffff8e2c  ffffcbb4      3d89   1
 PIntPRG
-                                  ffffcdba  ffffcf71       1b8   1
+                                  ffffcbb5  ffffcd6c       1b8   1
 W_1
-                                  ffffcf72  ffffcf72         0   1
+                                  ffffcd6d  ffffcd6d         0   1
 W_2
-                                  ffffcf72  ffffcf72         0   1
+                                  ffffcd6d  ffffcd6d         0   1
 W
-                                  ffffcf72  ffffcf72         0   1
+                                  ffffcd6d  ffffcd6d         0   1
 L
-                                  ffffcf74  ffffd04c        d9   4
+                                  ffffcd70  ffffcdcc        5d   4
 $ADDR_C_FFFFFFA0
                                   ffffffa0  ffffffaf        10   1
 FIXEDVECT

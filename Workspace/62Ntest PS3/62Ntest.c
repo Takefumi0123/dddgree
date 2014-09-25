@@ -67,6 +67,7 @@
 #define LEFT_STICK_HIGH	g_AtoZ_value[0]	
 #define LEFT_STICK_WIDE	g_atoz_value[0]
 #define RIGHT_STICK_WIDE	g_atoz_value[1]
+#define CROSS				g_atoz_value[8]
 #define PWM_PER		95
 
 //ƒOƒ[ƒoƒ‹•Ï”‚ÉŠi”[‚·‚éê‡	‚¨‚Î‚©‚È—á
@@ -1352,7 +1353,7 @@ int main(void)
 		add_degree		= 0,
 		degree_reverse_v	= 0,
 		degree_reverse_h	= 0,
-		velocity[50] = { 0.00 };
+		velocity =  0.00 ;
 	
 	float	Motor_output_x = 0,
 		Motor_output_y = 0,
@@ -1405,11 +1406,7 @@ int main(void)
 				g_x_coordnates += add_distance * cos( convert_radian( add_distance_degree + degree  )); 
 				g_y_coordnates += add_distance * sin( convert_radian( add_distance_degree + degree  ));
 			}
-			if( g_interrupt_timer_count3 >= INTERRUPT_TIME * 100 ){
-				g_interrupt_timer_count3 = 0;
-				velocity[i] = add_distance / ( INTERRUPT_TIME / 1000 );
-				i++;
-			}
+				velocity = add_distance / ( INTERRUPT_TIME / 1000 );
 			Motor_output_x = straight_output_x();
 			Motor_output_y = straight_output_y();
 			target_degree += turn_output();
@@ -1454,16 +1451,14 @@ int main(void)
 //				sprintf(string,"%f  %f  %f  %f  %f  %f  %f  %f  %f  %f  %f  %f  %f  %f  %f  %f  %f\n\r",g_atoz_value[0],g_AtoZ_value[0],g_atoz_value[1],g_AtoZ_value[1],g_atoz_value[3],g_atoz_value[4],g_atoz_value[5],g_atoz_value[6],g_atoz_value[7],g_atoz_value[8],g_atoz_value[9],g_atoz_value[10],g_atoz_value[11],g_atoz_value[12],g_atoz_value[13],g_atoz_value[14] );
 //				sprintf(string,"%f  %f  %f\n\r",target_degree,degree,Motor_output_turn); 
 //				sprintf(string,"%f  %f  %f\n\r",Motor_output_x,Motor_output_y,target_degree);
-				sprintf(string2,"%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,\n\r",velocity[0],velocity[1],velocity[2],velocity[3],velocity[4],velocity[5],velocity[6],velocity[7],velocity[8],velocity[9],velocity[10],velocity[11],velocity[12],velocity[13],velocity[14],velocity[15],velocity[16],velocity[17],velocity[18],velocity[19],velocity[20],velocity[21],velocity[22],velocity[23],velocity[24],velocity[25],velocity[26],velocity[27],velocity[28],velocity[29],velocity[30],velocity[31],velocity[32],velocity[33],velocity[34],velocity[35],velocity[36],velocity[37],velocity[38],velocity[39]);
-				transmission_string(string2);
 			}			
 
-			if(stop_flug_count < 120 ){
+			if( stop_flug_count < 120 ){
 				PORTD.DR.BIT.B7 = 0;
 				Move( manual_motor_output_rf + Motor_output_turn , manual_motor_output_lf + Motor_output_turn, manual_motor_output_lb + Motor_output_turn, manual_motor_output_rb + Motor_output_turn); 
 			}
 				
-			if(g_atoz_value[8] == 1 || stop_flug_count >= 120){
+			if( CROSS == 1 || stop_flug_count >= 120){
 				if(stop_flug_count >= 120 ){
 					PORTD.DR.BIT.B7 = 1;
 				}
