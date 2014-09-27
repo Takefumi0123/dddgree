@@ -1,4 +1,4 @@
-Renesas Optimizing Linker (W1.01.00 )             24-Sep-2014 17:17:59
+Renesas Optimizing Linker (W1.01.00 )             26-Sep-2014 20:15:28
 
 *** Options ***
 
@@ -34,13 +34,13 @@ B_2
 R_2
                                   00000084  00000091         e   2
 B
-                                  00000094  000004d7       444   4
+                                  00000094  000004df       44c   4
 R
-                                  000004d8  000008d3       3fc   4
+                                  000004e0  000008df       400   4
 SU
-                                  000008d4  000009d3       100   4
+                                  000008e0  000009df       100   4
 SI
-                                  000009d4  00000cd3       300   4
+                                  000009e0  00000cdf       300   4
 PResetPRG
                                   ffff8000  ffff8030        31   1
 C_1
@@ -64,19 +64,19 @@ D_1
 D_2
                                   ffff8a40  ffff8a4d         e   2
 D
-                                  ffff8a50  ffff8e4b       3fc   4
+                                  ffff8a50  ffff8e4f       400   4
 P
-                                  ffff8e4c  ffffcf0c      40c1   1
+                                  ffff8e50  ffffd01b      41cc   1
 PIntPRG
-                                  ffffcf0d  ffffd0c4       1b8   1
+                                  ffffd01c  ffffd1d3       1b8   1
 W_1
-                                  ffffd0c5  ffffd0c5         0   1
+                                  ffffd1d4  ffffd1d4         0   1
 W_2
-                                  ffffd0c5  ffffd0c5         0   1
+                                  ffffd1d4  ffffd1d4         0   1
 W
-                                  ffffd0c5  ffffd0c5         0   1
+                                  ffffd1d4  ffffd1d4         0   1
 L
-                                  ffffd0c8  ffffd150        89   4
+                                  ffffd1d4  ffffd274        a1   4
 $ADDR_C_FFFFFFA0
                                   ffffffa0  ffffffaf        10   1
 FIXEDVECT

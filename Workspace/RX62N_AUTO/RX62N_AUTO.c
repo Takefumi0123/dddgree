@@ -58,19 +58,43 @@
 #define START_Y_COORDNATES			0
 #define PI							3.14159265358979
 #define PCLK		48
+#define BITRATE_0	115200
 #define BITRATE_1	115200
 #define BITRATE_2	115200
-#define BITRATE_3	115200
 #define PWM_PERIOD			(48000000/1) / 100000
 #define TURN_P_GAIN	1.5
 #define TURN_D_GAIN	10
-#define LEFT_STICK_HIGH	g_AtoZ_value[0]	
-#define LEFT_STICK_WIDE	g_atoz_value[0]
+#define LEFT_STICK_HIGH		g_AtoZ_value[0]	
+#define LEFT_STICK_WIDE		g_atoz_value[0]
 #define RIGHT_STICK_WIDE	g_atoz_value[1]
 #define CROSS				g_atoz_value[8]
 #define PWM_PER		95
 #define START_X		0
 #define START_Y		0
+
+//構造体宣言	
+struct coordinates
+{
+	float	X;
+	float	Y;
+	float degree;
+};
+
+struct calc_velocity
+{
+	float lf;
+	float rf;
+	float lb;
+	float rb;
+}motor_output_velocity;
+
+struct calc_distance
+{
+	float lf;
+	float rf;
+	float lb;
+	float rb;
+}motor_output_distance;
 
 //グローバル変数に格納する場合	おばかな例
 float g_atoz_value[26] = {127.00, 127.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 
@@ -102,6 +126,8 @@ float g_X_acc;
 float g_Y_acc;
 float g_Z_acc;
 float g_velocity;
+float g_x_velocity;
+float g_y_velocity;
 unsigned char  g_input_r1350n[15] = {0};
 
 void All_setup(void);
@@ -331,13 +357,13 @@ void init_Sci_0(void)
 	
 	SCI0.SEMR.BIT.ABCS	= 1;		//調歩同期基本クロックを８サイクルの期間を１ビット期間の転送レートとする
 	
-	#if BITRATE_2 == 9600
+	#if BITRATE_0 == 9600
 		SCI0.SMR.BYTE		= 0x01;	
 	#else
 		SCI0.SMR.BYTE		= 0x00;	
 	#endif
 	
-	SCI0.BRR = ((48*1000000)/((64/(1+SCI0.SEMR.BIT.ABCS))*powf(2,2*SCI0.SMR.BIT.CKS-1)*BITRATE_3)-1);
+	SCI0.BRR = ((48*1000000)/((64/(1+SCI0.SEMR.BIT.ABCS))*powf(2,2*SCI0.SMR.BIT.CKS-1)*BITRATE_0)-1);
 	
 	for( bit_count = 0; bit_count < 0x800000; bit_count++ ){	//１ビット待つため
 	}
@@ -407,6 +433,7 @@ void init_Sci_2(void)//追加
 	IEN(SCI2,RXI2) = 1;
 	IPR(SCI2,RXI2) = 11;
 }
+
 void All_setup(void)
 {
 	init_clock();
@@ -451,6 +478,7 @@ void wait_interrupt(void)
 //	PORT8.DR.BIT.B1 = 1;
 	g_interrupt_timer_count ++;
 	g_interrupt_timer_count2 ++;
+	g_interrupt_timer_count3 ++;	
 	g_right_flont_motor_timer_count ++;
 	g_right_back_motor_timer_count ++;
 	g_left_flont_motor_timer_count ++;
@@ -625,6 +653,14 @@ void receive_att(void)
     receive_order_c(c);
 }
 
+/******************************************************************************
+*	タイトル ： 文字列をシリアル送信
+*	  関数名 ： transmission_string
+*	  戻り値 ： void型 
+*	   引数1 ： char型 *s  
+*	  作成者 ： 石井
+*	  作成日 ： 2014/09/25
+******************************************************************************/
 void transmission_string(char *s)
 {
 	int i = 0;
@@ -1155,17 +1191,17 @@ void input_R1350N(void)
 {
 	static int i = 0;
 	static int read_start = OFF;
-	unsigned char index;
+//	unsigned char index;
 	unsigned int angle;
-	float angle_f;
+//	float angle_f;
 	static float start_Rate	= 0;
 	unsigned int rate;
-	float rate_f;
-	float now_Rate;
+//	float rate_f;
+//	float now_Rate;
 	unsigned int x_acc;
 	unsigned int y_acc;
 	unsigned int z_acc;
-	unsigned int reserved;
+//	unsigned int reserved;
 	unsigned char check_sum;
 	char string[20] = {0};
 	static int start_flug	= 0;
@@ -1192,15 +1228,15 @@ void input_R1350N(void)
 			}
 			
 			//データを組み立てる
-			index = g_input_r1350n[2];
+//			index = g_input_r1350n[2];
 			rate = (g_input_r1350n[3] & 0xFF) | ((g_input_r1350n[4] << 8) & 0xFF00);
 			angle = (g_input_r1350n[5] & 0xFF) | ((g_input_r1350n[6] << 8) & 0XFF00);
-			rate_f = (g_input_r1350n[3] & 0xFF) | ((g_input_r1350n[4] << 8) & 0xFF00);
-			angle_f = (g_input_r1350n[5] & 0xFF) | ((g_input_r1350n[6] << 8) & 0XFF00);
+//			rate_f = (g_input_r1350n[3] & 0xFF) | ((g_input_r1350n[4] << 8) & 0xFF00);
+//			angle_f = (g_input_r1350n[5] & 0xFF) | ((g_input_r1350n[6] << 8) & 0XFF00);
 			x_acc = (g_input_r1350n[7] & 0xFF) | ((g_input_r1350n[8] << 8) & 0xFF00);
 			y_acc = (g_input_r1350n[9] & 0xFF) | ((g_input_r1350n[10] << 8) & 0XFF00);
 			z_acc = (g_input_r1350n[11] & 0xFF) | ((g_input_r1350n[12] << 8) & 0xFF00);
-			reserved = g_input_r1350n[13];
+//			reserved = g_input_r1350n[13];
 			
 			//チェックサムの確認
 			check_sum = 	g_input_r1350n[2] + g_input_r1350n[3] + g_input_r1350n[4] + g_input_r1350n[5]
@@ -1272,7 +1308,14 @@ void input_R1350N(void)
 		}
 	}
 }
-
+/******************************************************************************
+*	タイトル ：直進X軸方向出力決定
+*	  関数名 ： straight_output_x
+*	  戻り値 ： float型 
+*	    引数 ： なし
+*	  作成者 ： 石井
+*	  作成日 ： 2014/09/25
+******************************************************************************/
 float straight_output_x( void ){
 	
 	float straight_cal_x = 0.00;
@@ -1286,7 +1329,14 @@ float straight_output_x( void ){
 	
 	return(straight_cal_x);
 }
-
+/******************************************************************************
+*	タイトル ：直進Y軸方向出力決定
+*	  関数名 ： straight_output_y
+*	  戻り値 ： float型 
+*	    引数 ： なし
+*	  作成者 ： 石井
+*	  作成日 ： 2014/09/25
+******************************************************************************/
 float straight_output_y( void ){
 	
 	float straight_cal_y = 0.00;
@@ -1301,7 +1351,14 @@ float straight_output_y( void ){
 	return(straight_cal_y);
 }
 
-
+/******************************************************************************
+*	タイトル ： 回転方向出力決定
+*	  関数名 ： turn_output
+*	  戻り値 ： float型 
+*	    引数 ： なし
+*	  作成者 ： 石井
+*	  作成日 ： 2014/09/25
+******************************************************************************/
 float turn_output( void ){
 	
 	float turn_cal = 0.00;
@@ -1316,7 +1373,15 @@ float turn_output( void ){
 	return(turn_cal);
 }
 
-//PD回転制御
+/******************************************************************************
+*	タイトル ： 回転PD制御
+*	  関数名 ： Turn_PD
+*	  戻り値 ： float型 
+*	   引数1 ： float型 target_degree  
+*	   引数2 ： float型 now_degree  
+*	  作成者 ： 石井
+*	  作成日 ： 2014/09/25
+******************************************************************************/
 float Turn_PD( float target_degree , float now_degree )
 {	
 	float output = 0.00;
@@ -1415,21 +1480,25 @@ float get_distance(float target_x,float target_y,float x_now,float y_now)
 	return (distance);
 }
 
-struct calc_velocity
+/******************************************************************************
+*	タイトル ： 角度を範囲内に収める関数
+*	  関数名 ： revision_degree
+*	  戻り値 ： float型 
+*	   引数1 ： float型 degree  
+*	  作成者 ： 石井
+*	  作成日 ： 2014/09/25
+******************************************************************************/
+float revision_degree(float degree)
 {
-	float lf;
-	float rf;
-	float lb;
-	float rb;
-}motor_output_velocity;
+	while(degree > 179){
+		degree = degree - 360;
+	}
+	while(degree < -179){
+		degree = degree + 360;
+	}
+	return(degree);
+}
 
-struct calc_distance
-{
-	float lf;
-	float rf;
-	float lb;
-	float rb;
-}motor_output_distance;
 /******************************************************************************
 *	タイトル ： 速度台形制御出力計算(改良)
 *	  関数名 ： calculate_motor_output_lrb_velocity
@@ -1445,14 +1514,15 @@ struct calc_distance
 *	  作成者 ： 坂下文彦
 *	  作成日 ： 2014/03/03
 ******************************************************************************/
-void calculate_motor_output_lrb_velocity(float x_start,  float y_start,  float x_now,  float y_now,  float target_x, float target_y, float degree_now, float a_up,  float a_down,  float max_velocity,  int step)
+void calculate_motor_output_lrb_velocity(float x_start,  float y_start,  float x_now,  float y_now,  float target_x, float target_y, float degree_now, float a_up,  float a_down,  float max_velocity,  int task)
 {
 	float direction_velocity = 0.0,	gap_now = 0.0,	motor_output = 0.0,	motor_output_x = 0.0,	motor_output_y = 0.0,
-		degree_reverse = 0.0,	distance_rest = 0.0,	direction_degree_now = 0.0,	direction_target_degree = 0.0,	p_gain = 0.2;
+		x_degree_reverse = 0.0,	y_degree_reverse = 0.0,	distance_rest = 0.0,	direction_degree_now = 0.0,	direction_target_degree = 0.0,	p_gain = 0.15,x_target_velocity = 0.00 , y_target_velocity = 0.00,
+		gap_x_v=0.00,gap_y_v=0.00;
 	static float target_velocity = 0.0;
-	static int step_old = 0;
+	static int task_old = 0;
 	char string[100] = { 0 };
-	if(step != step_old){
+	if(task != task_old){
 		target_velocity = 0.0;
 	}
 
@@ -1473,29 +1543,51 @@ void calculate_motor_output_lrb_velocity(float x_start,  float y_start,  float x
 	}else{
 		target_velocity = sqrtf( 2 * a_down * distance_rest);
 	}
+	
+	x_target_velocity = target_velocity * cos(convert_radian(direction_degree_now));
+	y_target_velocity = target_velocity * sin(convert_radian(direction_degree_now));
 
-	gap_now = target_velocity - direction_velocity;
-	motor_output = gap_now * p_gain;//速度はpゲインのみ
+	gap_x_v = ( x_target_velocity - g_x_velocity ) * p_gain;
+	gap_y_v = ( y_target_velocity - g_y_velocity ) * p_gain;
 
-
-	if(motor_output < 0){//出力が負のとき、角度を180度反転
-		degree_reverse = 180.0;
+	if(gap_x_v < 0){//出力が負のとき、角度を180度反転
+		x_degree_reverse = 180.0;
 	}else{
-		degree_reverse = 0.0;
+		x_degree_reverse = 0.0;
 	}
-
-	motor_output_x = fabs(motor_output) * cos(convert_radian(direction_degree_now + degree_reverse));
-	motor_output_y = fabs(motor_output) * sin(convert_radian(direction_degree_now + degree_reverse));
+	if(gap_y_v < 0){//出力が負のとき、角度を180度反転
+		y_degree_reverse = 180.0;
+	}else{
+		y_degree_reverse = 0.0;
+	}
+	
+	motor_output_x =gap_x_v;
+	motor_output_y =gap_y_v ;
 
 	motor_output_velocity.lf = get_motor_output_lf(motor_output_x,motor_output_y,degree_now);
 	motor_output_velocity.rf = get_motor_output_rf(motor_output_x,motor_output_y,degree_now);
 	motor_output_velocity.lb = get_motor_output_lb(motor_output_x,motor_output_y,degree_now);
 	motor_output_velocity.rb = get_motor_output_rb(motor_output_x,motor_output_y,degree_now);
-				sprintf(string,"%f,%f,%f\n\r",motor_output_x,motor_output_y,motor_output_velocity.lf);
-			transmission_string(string);
-	step_old = step;
+//	sprintf(string,"%f,%f,%f,%f,%f,%f,%f,%f\n\r",motor_output,motor_output_x,motor_output_y,direction_degree_now,direction_velocity,target_velocity,target_x,target_y);
+//	transmission_string(string);
+	task_old = task;
 }
 
+float get_target_angular_velocity(float difference_degree, float a_up,  float a_down,  float max_angular_velocity)
+{
+	static float target_angular_velocity = 0.0;
+
+	if(difference_degree > 0.5 * max_angular_velocity * max_angular_velocity / a_down ){
+			if(target_angular_velocity < max_angular_velocity){
+				target_angular_velocity += (a_up * INTERRUPT_TIME);					//v = a * t		時間と																																		１次関数的ではあるが、+=することで加速していく目標速度になる		*/
+			}else{
+				target_angular_velocity = max_angular_velocity;
+			}
+	}
+	target_angular_velocity =  sqrt(2 * a_down * difference_degree);
+
+	return (target_angular_velocity);
+}
 
 int main(void)
 {
@@ -1503,37 +1595,38 @@ int main(void)
 		horizontal_enc_count = 0,
 		old_vertical_enc_count	= 0,
 		old_horizontal_enc_count	= 0,
-		step = 0;
-	float	add_distance_vertical	= 0,
-		add_distance_horizontal	= 0,
-		old_distance_vertical	= 0,
-		old_distance_horizontal = 0,
-		add_distance			= 0,
-		add_distance_degree			= 0;
+		task = 0,
+		motor = ON;
+		
+	float	add_distance_vertical		= 0.00,
+		add_distance_horizontal	= 0.00,
+		add_distance			= 0.00,
+		add_distance_degree		= 0.00;
 	
-	float	Motor_output_x = 0,
-		Motor_output_y = 0,
-		Motor_output_turn = 0.00,
-		turn_pwm_percent = 10,
-		old_degree = 0,
-		degree = 0,
-		target_degree = 0,
-		start_x = START_X,
-		start_y = START_Y,
-		target_x[4] = { 2000 , 2000 , 0 , 0 },
-		target_y[4] = { 0, 2000 , 2000 , 0 },
-		a_up = 500,
-		a_down = 500,
-		max_velocity = 500;
+	float	degree 				= 0.00,
+		old_degree 			= 0.00,	
+		target_degree 			= 0.00;
 		
-	float	manual_motor_output_rf = 0.00,
-		manual_motor_output_lf = 0.00,
-		manual_motor_output_lb = 0.00,
-		manual_motor_output_rb = 0.00;
+	float	Motor_output_turn 		= 0.00,
+		task_start_x			= START_X,
+		task_start_y			= START_Y;
 		
-	int stop_flug_count = 0;
+	float	a_up 				= 2000.0,
+		a_down 				= 2000.0,
+		max_velocity 			= 2000.0;
+		
+	float old_x = START_X,
+		old_y = START_Y;
 		
 	char string[100] = { 0 };
+	
+	struct coordinates COORD[5] = {
+		{ 5000.0, 0.00, 0.00},
+		{ 5000.0, 5000.0, 0.00},
+		{ 0.00, 5000.0 , 0.00},
+		{ 0.00, 0.00, 0.00},
+		{ BRAKE,BRAKE,BRAKE },
+	};
 	
 	All_setup();
 
@@ -1541,51 +1634,62 @@ int main(void)
 	PORTD.DDR.BIT.B7 = 1;
 	
 	while(1){
-		if( g_interrupt_timer_count2 >= 500 ){
-		if(g_interrupt_timer_count >= INTERRUPT_TIME){
-			g_interrupt_timer_count = 0;
-			if( fabs( -g_Rate_f - old_degree ) < 30 || fabs( -g_Rate_f - old_degree ) > 330){
-				degree = -g_Rate_f;
+		if( g_interrupt_timer_count2 >= 4000 ){
+			if(g_interrupt_timer_count >= INTERRUPT_TIME){
+				g_interrupt_timer_count = 0;
+				
+				if( fabs( -g_Rate_f - old_degree ) < 30 || fabs( -g_Rate_f - old_degree ) > 330){
+					degree = -g_Rate_f;
+				}
+				
+				vertical_enc_count = VERTICAL_ENCODER  + ( 65536 * g_over_vertical_count)  + ( ( -65536 ) * g_under_vertical_count  ); //垂直エンコーダーの値
+				horizontal_enc_count = HORIZONTAL_ENCODER  + ( 65536 * g_over_horizontal_count)  + ( ( -65536 ) * g_under_horizontal_count  ); //水平エンコーダーの値				
+				
+				add_distance_vertical = ( ( vertical_enc_count - old_vertical_enc_count ) * PI * DIAMETER_VERTICAL_WHEEL ) / ( PULSE_VERTICAL_ENCODER * 4 );
+				add_distance_horizontal = ( ( horizontal_enc_count - old_horizontal_enc_count ) * PI * DIAMETER_HORIZONTAL_WHEEL ) / ( PULSE_HORIZONTAL_ENCODER * 4 );
+				add_distance = pow(add_distance_vertical * add_distance_vertical + add_distance_horizontal * add_distance_horizontal,0.5);
+				
+				if(add_distance_horizontal != 0 || add_distance_vertical != 0 ){
+					add_distance_degree = atan2( add_distance_horizontal , add_distance_vertical ) * 180 / PI;
+					g_x_coordnates += add_distance * cos( convert_radian( add_distance_degree + degree  )); 
+					g_y_coordnates += add_distance * sin( convert_radian( add_distance_degree + degree  ));
+				}
+				g_x_velocity = (g_x_coordnates - old_x) / ( (float)INTERRUPT_TIME / 1000 );
+				g_y_velocity = (g_y_coordnates - old_y) / ( (float)INTERRUPT_TIME / 1000 );
+				g_velocity = pow(pow((g_x_coordnates - old_x) / ( (float)INTERRUPT_TIME / 1000 ),2) + pow((g_y_coordnates - old_y) / ( (float)INTERRUPT_TIME / 1000 ),2),0.5);
+				
+				calculate_motor_output_lrb_velocity( task_start_x , task_start_y , g_x_coordnates , g_y_coordnates, COORD[task].X , COORD[task].Y , degree , a_up , a_down , max_velocity , task );
+//				get_target_angular_velocity(difference_degree, angle_a_up, angle_a_down, max_angular_velocity);
+				target_degree = revision_degree(target_degree + turn_output());
+				
+				Motor_output_turn = Turn_PD( target_degree , degree );
+				if( get_distance( COORD[task].X, COORD[task].Y, g_x_coordnates, g_y_coordnates) < 10 && COORD[task+1].X == BRAKE){
+					motor = OFF;
+				}else if( get_distance( COORD[task].X, COORD[task].Y, g_x_coordnates, g_y_coordnates) < 3 ){
+					task ++;
+					task_start_x = g_x_coordnates;
+					task_start_y = g_y_coordnates;
+				}
+//				sprintf(string,"%f%f,%f,%d\n\r",g_velocity,g_x_coordnates,g_y_coordnates,task);
+//				transmission_string(string);
+				
+				old_vertical_enc_count = vertical_enc_count;
+				old_horizontal_enc_count = horizontal_enc_count;
+				old_degree = degree;
+				old_x = g_x_coordnates;
+				old_y = g_y_coordnates;
+				
+				if(g_interrupt_timer_count3 > 400 ){
+					g_interrupt_timer_count3 = 0;
+					sprintf(string,"%f\n\r",g_velocity);
+					transmission_string(string);
+				}
+				if(motor == OFF){
+					Move( 0, 0, 0, 0);
+				}else{
+					Move( motor_output_velocity.rf + Motor_output_turn , motor_output_velocity.lf + Motor_output_turn, motor_output_velocity.lb + Motor_output_turn, motor_output_velocity.rb + Motor_output_turn); 
+				}
 			}
-			vertical_enc_count = VERTICAL_ENCODER  + ( 65536 * g_over_vertical_count)  + ( ( -65536 ) * g_under_vertical_count  ); //垂直エンコーダーの値
-			horizontal_enc_count = HORIZONTAL_ENCODER  + ( 65536 * g_over_horizontal_count)  + ( ( -65536 ) * g_under_horizontal_count  ); //水平エンコーダーの値				
-			
-			add_distance_vertical = ( ( vertical_enc_count - old_vertical_enc_count ) * PI * DIAMETER_VERTICAL_WHEEL ) / ( PULSE_VERTICAL_ENCODER * 4 );
-			add_distance_horizontal = ( ( horizontal_enc_count - old_horizontal_enc_count ) * PI * DIAMETER_HORIZONTAL_WHEEL ) / ( PULSE_HORIZONTAL_ENCODER * 4 );
-			add_distance = pow(add_distance_vertical * add_distance_vertical + add_distance_horizontal * add_distance_horizontal,0.5);
-			
-			if(add_distance_horizontal != 0 || add_distance_vertical != 0 ){
-				add_distance_degree = atan2( add_distance_horizontal , add_distance_vertical ) * 180 / PI;
-				g_x_coordnates += add_distance * cos( convert_radian( add_distance_degree + degree  )); 
-				g_y_coordnates += add_distance * sin( convert_radian( add_distance_degree + degree  ));
-			}
-			g_velocity = add_distance / ( INTERRUPT_TIME / 1000 );
-			
-			calculate_motor_output_lrb_velocity( start_x , start_y , g_x_coordnates , g_y_coordnates, target_x[step] , target_y[step] , degree , a_up , a_down , max_velocity , step );
-
-			target_degree += turn_output();
-			
-			while( target_degree > 180 ){
-				target_degree -= 360;
-			}
-			while( target_degree < -180 ){
-				target_degree += 360;
-			}
-			Motor_output_turn = Turn_PD( target_degree , degree );
-
-			if( get_distance( target_x[step], target_y[step], g_x_coordnates, g_y_coordnates) < 10 ){
-				step ++;
-				start_x = g_x_coordnates;
-				start_y = g_y_coordnates;
-			}
-//			sprintf(string,"%f,%f,%f\n\r",target_x[step],target_y[step],motor_output_velocity.lf);
-//			transmission_string(string);
-			old_vertical_enc_count = vertical_enc_count;
-			old_horizontal_enc_count = horizontal_enc_count;
-			old_degree = degree;
-			
-			Move( motor_output_velocity.rf + Motor_output_turn , motor_output_velocity.lf + Motor_output_turn, motor_output_velocity.lb + Motor_output_turn, motor_output_velocity.rb + Motor_output_turn); 
-		}
 		}
 	}
 }
