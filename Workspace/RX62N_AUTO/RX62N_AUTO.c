@@ -16,7 +16,7 @@
 #include "typedefine.h"
 #include "iodefine.h"
 #include "machine.h"
-//#include "init_RX62N.h"
+#include "init.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
@@ -28,7 +28,7 @@
 #define STICK_NO_MOVE_RANGE	0.2		//足回りが動かないスティックの値の範囲
 #define OPERATE_DEGREE			90
 #define RIGHT_FLONT_CW			PORT7.DR.BIT.B0
-#define RIGHT_FLONT_CCW			PORT7.DR.BIT.B2
+#define RIGHT_FLONT_CCW		PORT7.DR.BIT.B2
 #define LEFT_BACK_CW			PORT7.DR.BIT.B7
 #define LEFT_BACK_CCW			PORT7.DR.BIT.B5
 #define LEFT_FLONT_CW			PORT7.DR.BIT.B6
@@ -36,13 +36,13 @@
 #define RIGHT_BACK_CW			PORT7.DR.BIT.B1
 #define RIGHT_BACK_CCW			PORT7.DR.BIT.B3
 #define RIGHT_FLONT_DUTY		MTU6.TGRB
-#define LEFT_FLONT_DUTY			MTU4.TGRB
+#define LEFT_FLONT_DUTY		MTU4.TGRB
 #define LEFT_BACK_DUTY			MTU4.TGRD
-#define RIGHT_BACK_DUTY			MTU6.TGRD
-#define RIGHT_FLONT_MAX_DUTY		MTU4.TGRA
-#define LEFT_FLONT_MAX_DUTY		MTU6.TGRA
+#define RIGHT_BACK_DUTY		MTU6.TGRD
+#define RIGHT_FLONT_MAX_DUTY	MTU4.TGRA
+#define LEFT_FLONT_MAX_DUTY	MTU6.TGRA
 #define LEFT_BACK_MAX_DUTY		MTU6.TGRC
-#define RIGHT_BACK_MAX_DUTY		MTU4.TGRC
+#define RIGHT_BACK_MAX_DUTY	MTU4.TGRC
 #define M_PI 					3.14159265
 #define LIMIT_MOTOR_DUTY_TIRE	95
 #define BRAKE					1000
@@ -54,23 +54,16 @@
 #define DIAMETER_HORIZONTAL_WHEEL	51
 #define PULSE_VERTICAL_ENCODER		500
 #define PULSE_HORIZONTAL_ENCODER	500
-#define START_X_COORDNATES			0
-#define START_Y_COORDNATES			0
+#define START_X_COORDNATES			0.00
+#define START_Y_COORDNATES			0.00
 #define PI							3.14159265358979
-#define PCLK		48
-#define BITRATE_0	115200
-#define BITRATE_1	115200
-#define BITRATE_2	115200
-#define PWM_PERIOD			(48000000/1) / 100000
-#define TURN_P_GAIN	1.5
-#define TURN_D_GAIN	10
-#define LEFT_STICK_HIGH		g_AtoZ_value[0]	
-#define LEFT_STICK_WIDE		g_atoz_value[0]
-#define RIGHT_STICK_WIDE	g_atoz_value[1]
-#define CROSS				g_atoz_value[8]
-#define PWM_PER		95
-#define START_X		0
-#define START_Y		0
+#define TURN_P_GAIN				1.5
+#define TURN_D_GAIN				10
+#define LEFT_STICK_HIGH				g_AtoZ_value[0]	
+#define LEFT_STICK_WIDE				g_atoz_value[0]
+#define RIGHT_STICK_WIDE			g_atoz_value[1]
+#define CROSS						g_atoz_value[8]
+#define PWM_PER					95
 
 //構造体宣言	
 struct coordinates
@@ -88,14 +81,6 @@ struct calc_velocity
 	float rb;
 }motor_output_velocity;
 
-struct calc_distance
-{
-	float lf;
-	float rf;
-	float lb;
-	float rb;
-}motor_output_distance;
-
 //グローバル変数に格納する場合	おばかな例
 float g_atoz_value[26] = {127.00, 127.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 
                                 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 
@@ -104,7 +89,6 @@ float g_AtoZ_value[26] = {127.00, 127.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.
                                 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 
                                 0.00, 0.00, 0.00, 0.00, 0.00, 0.00};
 
-
 float g_interrupt_timer_count = 0.00,
 	g_interrupt_timer_count2 = 0.00 ,
 	g_interrupt_timer_count3 = 0.00 ,
@@ -112,10 +96,6 @@ float g_interrupt_timer_count = 0.00,
 	g_right_back_motor_timer_count = 0.00,
 	g_left_flont_motor_timer_count = 0.00,
 	g_left_back_motor_timer_count = 0.00;
-volatile unsigned long	g_controller_receive_1st	= 0;	//コントローラから帰ってくるデータの格納フォルダ1stは不定でよい。
-volatile unsigned long	g_controller_receive_2nd	= 0;
-volatile unsigned long	g_controller_receive_3rd	= 0;
-int 	getdate1 = 0, getdate2 = 0, getdate3 = 0;
 int	g_over_vertical_count	 = 0, g_under_vertical_count = 0, g_over_horizontal_count = 0, g_under_horizontal_count = 0;
 float	g_x_coordnates = START_X_COORDNATES, g_y_coordnates = START_Y_COORDNATES;
 float g_Angle;
@@ -159,280 +139,15 @@ void Move_left_back_tire(float left_back_duty);
 void Move_right_back_tire(float right_back_duty);
 void Move(float right_flont_duty,float left_flont_duty,float left_back_duty,float right_back_duty);
 void input_R1350N(void);
-/******************************************************************************
-*	タイトル ： PCK ICKの設定
-*	  関数名 ： init_clock
-*	  戻り値 ： void型 PCK　ICKの設定
-*	    引数 ： なし
-*	  作成者 ： 石井
-*	  作成日 ： 2014/06/21
-******************************************************************************/
-void init_clock(void)
-{	
-	SYSTEM.SCKCR.BIT.PCK = 1; //×4 ICKとは関係ない場所の速さ
-	SYSTEM.SCKCR.BIT.ICK = 0; //×8 マイコンそのものの速さ	
-}
-
-/******************************************************************************
-*	タイトル ： タイマーの設定
-*	  関数名 ： init_cmt0
-*	  戻り値 ： void型 タイマーの設定
-*	    引数 ： なし
-*	  作成者 ： 石井
-*	  作成日 ： 2014/06/21
-******************************************************************************/
-void init_CMT0(void)
-{
-	SYSTEM.MSTPCRA.BIT.MSTPA15 = 0;//CMT0のモジュールストップ状態を解除
-	CMT.CMSTR0.BIT.STR0 = 0;//カウント停止
-	
-	CMT0.CMCR.BIT.CKS = 2;//クロック選択 PCLK/128
-	CMT0.CMCOR = 375; //CMCORの決定 48000000/128/1000 = 375
-	CMT0.CMCNT = 0;//初期化
-	CMT0.CMCR.BIT.CMIE = 1;
-
-	IEN(CMT0,CMI0) = 1;//割り込み要求許可レジスタ
-	IPR(CMT0,CMI0) = 14;//優先度
-}
-
-/******************************************************************************
-*	タイトル ： PWMの設定
-*	  関数名 ： init_pwm
-*	  戻り値 ： void型
-*	    引数 ： なし
-*	  作成者 ： 坂下文彦
-*	  作成日 ： 2013/10/27
-******************************************************************************/
-void init_pwm(void)
-{
-	//MTU1,MTU2,,MTU7,MTU8は位相計数モードのためPWM設定不要
-	
-	PORT7.DDR.BIT.B0 = ON;			//MOTOR_OUTPUT
-	PORT7.DDR.BIT.B1 = ON;			//MOTOR_OUTPUT
-	PORT7.DDR.BIT.B2 = ON;			//MOTOR_OUTPUT
-	PORT7.DDR.BIT.B3 = ON;			//MOTOR_OUTPUT
-	PORT7.DDR.BIT.B4 = ON;			//MOTOR_OUTPUT
-	PORT7.DDR.BIT.B5 = ON;			//MOTOR_OUTPUT
-	PORT7.DDR.BIT.B6 = ON;			//MOTOR_OUTPUT
-	PORT7.DDR.BIT.B7 = ON;			//MOTOR_OUTPUT
-	PORTA.DDR.BIT.B0 = ON;			//MOTOR_PWM
-	PORTA.DDR.BIT.B2 = ON;			//MOTOR_PWM
-	PORT8.DDR.BIT.B2 = ON;			//MOTOR_PWM
-	PORT8.DDR.BIT.B3 = ON;			//MOTOR_PWM
-	
-	
-	MTUA.TSTR.BIT.CST4 = 0;			//カウント停止 
-	MTUB.TSTR.BIT.CST0 = 0; 		//柳田追加12/22
-	IOPORT.PFCMTU.BIT.MTUS4 = 1;		//ポートファンクションレジスタMTIOC4A-B,MTIOC4C-B端子を選択　追加
-	SYSTEM.MSTPCRA.BIT.MSTPA8 = 0;		//MTUユニット1（MTU6～MTU11）のモジュールストップ解除
-	SYSTEM.MSTPCRA.BIT.MSTPA9 = 0;		//MTUユニット0（MTU0～MTU5）のモジュールストップ解除 追加柳田12/22
-	MTU4.TCNT = 0;				//追加柳田12/22　
-	MTU6.TCNT = 0;				//追加柳田12/22
-	MTU4.TCR.BIT.CCLR = 0x01;		//追加柳田12/22
-	MTU6.TCR.BIT.CCLR = 0x01;		//追加柳田12/22
-	MTU4.TCR.BIT.CKEG = 0x00;		//追加柳田12/22
-	MTU6.TCR.BIT.CKEG = 0x00;		//追加柳田12/22
-	MTU4.TCR.BIT.TPSC = 0x00;//0x03;		//追加柳田12/22
-	MTU6.TCR.BIT.TPSC = 0x00;//0x03;		//追加柳田12/22
-
-	MTU4.TMDR.BIT.MD = 0x02;		//追加柳田12/22
-	MTU6.TMDR.BIT.MD = 0x02;		//追加柳田12/22
-//	MTUB.TOER.BIT.OE0B = 1;			//PWM出力許可 MTIOC10A
-//	MTUB.TOER.BIT.OE0D = 1;			//PWM出力許可 MTIOC10C
-	MTUA.TOER.BIT.OE4A = 1;
-	MTUA.TOER.BIT.OE4C = 1;
-	
-	MTU4.TIORH.BIT.IOA = 2;			//追加柳田12/22
-	MTU4.TIORH.BIT.IOB = 1;			//追加柳田12/22
-	MTU6.TIORH.BIT.IOA = 2;			//追加柳田12/22
-	MTU6.TIORH.BIT.IOB = 1;			//追加柳田12/22
-
-	MTU4.TIORL.BIT.IOC = 2;			//追加柳田12/22
-	MTU4.TIORL.BIT.IOD = 1;			//追加柳田12/22
-	MTU6.TIORL.BIT.IOC = 2;			//追加柳田12/22
-	MTU6.TIORL.BIT.IOD = 1;			//追加柳田12/22
-
-	MTU4.TGRA = PWM_PERIOD;		//追加柳田12/22
-	MTU4.TGRC = PWM_PERIOD;		//追加柳田12/22
-	MTU6.TGRA = PWM_PERIOD;//_OTHER;		//追加柳田12/22
-	MTU6.TGRC = PWM_PERIOD;//_OTHER;		//追加柳田12/22
-	
-	MTUA.TSTR.BIT.CST4 = 1;			//柳田追加12/22	//2013.02.18	CST3→CST4	MTU4のため3だと動かなかった
-	MTUB.TSTR.BIT.CST0 = 1; 		//柳田追加12/22
-}
-
-/******************************************************************************
-*	タイトル ： すべてのエンコーダ設定を行う
-*	  関数名 ： init_all_encoder
-*	  戻り値 ： void型
-*	    引数 ： なし
-*	  作成者 ： 坂下文彦
-*	  作成日 ： 2013/10/14
-******************************************************************************/
-void init_all_encoder(void)
-{
-	PORTC.ICR.BIT.B6 = 1;	//MTCLKAの入力バッファを有効に
-	PORTC.ICR.BIT.B7 = 1;	//MTCLKBの入力バッファを有効に
-	PORTC.ICR.BIT.B4 = 1;	//MTCLKCの入力バッファを有効に
-	PORTC.ICR.BIT.B5 = 1;	//MTCLKDの入力バッファを有効に
-	PORTC.ICR.BIT.B2 = 1;	//MTCLKEの入力バッファを有効に
-	PORTC.ICR.BIT.B3 = 1;	//MTCLKFの入力バッファを有効に
-	PORTC.ICR.BIT.B0 = 1;	//MTCLKGの入力バッファを有効に
-	PORTC.ICR.BIT.B1 = 1;	//MTCLKHの入力バッファを有効に
-
-	IOPORT.PFCMTU.BIT.TCLKS = 1;	//PC6,7,4,5をMTCLKn-B端子として設定
-	IOPORT.PFDMTU.BIT.TCLKS = 0;	//PC2,3,0,1をMTCLKn-A端子として設定
-
-	SYSTEM.MSTPCRA.BIT.MSTPA9 = 0;
-	SYSTEM.MSTPCRA.BIT.MSTPA8 = 0;
-
-	MTUA.TSTR.BIT.CST1 = 0;//カウント動作停止
-	MTUA.TSTR.BIT.CST2 = 0;//カウント動作停止
-	MTUB.TSTR.BIT.CST1 = 0;//カウント動作停止
-	MTUB.TSTR.BIT.CST2 = 0;//カウント動作停止
-
-	MTU1.TMDR.BIT.MD = 4;//位相計数モード
-	MTU2.TMDR.BIT.MD = 4;//位相計数モード
-	MTU7.TMDR.BIT.MD = 4;//位相計数モード
-	MTU8.TMDR.BIT.MD = 4;//位相計数モード
-
-	MTU1.TCR.BIT.CCLR = 0;//TCNTのクリア禁止
-	MTU2.TCR.BIT.CCLR = 0;//TCNTのクリア禁止
-	MTU7.TCR.BIT.CCLR = 0;//TCNTのクリア禁止
-	MTU8.TCR.BIT.CCLR = 0;//TCNTのクリア禁止
-
-	MTUA.TSTR.BIT.CST1 = 1;//カウント動作開始
-	MTUA.TSTR.BIT.CST2 = 1;//
-	MTUB.TSTR.BIT.CST1 = 1;//
-	MTUB.TSTR.BIT.CST2 = 1;//
-
-	IPR(MTU1,TCIV1) = 0;			//割り込みの優先度を最低(割り込み禁止)にする
-	IPR(MTU2,TCIV2) = 0;			//割り込みの優先度を最低(割り込み禁止)にする
-	IPR(MTU7,TCIV7) = 0;			//割り込みの優先度を最低(割り込み禁止)にする
-	IPR(MTU8,TCIV8) = 0;			//割り込みの優先度を最低(割り込み禁止)にする
-
-	MTU1.TIER.BIT.TCIEV = 1;//オーバーフロー割り込みを許可する
-	MTU1.TIER.BIT.TCIEU = 1;//アンダーフロー割り込みを許可する
-	MTU2.TIER.BIT.TCIEV = 1;//オーバーフロー割り込みを許可する
-	MTU2.TIER.BIT.TCIEU = 1;//アンダーフロー割り込みを許可する
-	MTU7.TIER.BIT.TCIEV = 1;
-	MTU7.TIER.BIT.TCIEU = 1;
-	MTU8.TIER.BIT.TCIEV = 1;
-	MTU8.TIER.BIT.TCIEU = 1;
-
-	IEN(MTU1,TCIV1) = 1;//割り込み処理を許可
-	IEN(MTU1,TCIU1) = 1;//割り込み処理を許可
-	IPR(MTU1,TCIV1) = 15;//割り込み優先度を14
-
-	IEN(MTU2,TCIV2) = 1;//割り込み処理を許可
-	IEN(MTU2,TCIU2) = 1;//割り込み処理を許可
-	IPR(MTU2,TCIV2) = 15;//割り込み優先度を14に
-
-	IEN(MTU7,TCIV7) = 1;//割り込み処理を許可
-	IEN(MTU7,TCIU7) = 1;//割り込み処理を許可
-	IPR(MTU7,TCIV7) = 15;//割り込み優先度を14に
-
-	IEN(MTU8,TCIV8) = 1;//割り込み処理を許可
-	IEN(MTU8,TCIU8) = 1;//割り込み処理を許可
-	IPR(MTU8,TCIV8) = 15;//割り込み優先度を14に
-}
-
-/******************************************************************************
-*	タイトル ： sci通信初期化
-*	  関数名 ： init_Sci
-*	  戻り値 ： void型 
-*	    引数 ： なし
-******************************************************************************/
-void init_Sci_0(void)
-{
-	int bit_count = 0;	
-	
-	SYSTEM.MSTPCRB.BIT.MSTPB31 = 0;	//SCI1モジュールSTOP状態を解除
-	SCI0.SCR.BYTE		= 0x00;		//シリアルコントロールレジスタ
-										//河原 0x01→0x00 で通信速度を最大に．分周1
-	PORT2.DDR.BIT.B1	= 0;		//
-	PORT2.ICR.BIT.B1	= 1;		//
-	PORT2.DDR.BIT.B0 	= 0;	//追加
-	PORT2.ICR.BIT.B0 	= 1;	//追加
-	
-	SCI0.SEMR.BIT.ABCS	= 1;		//調歩同期基本クロックを８サイクルの期間を１ビット期間の転送レートとする
-	
-	#if BITRATE_0 == 9600
-		SCI0.SMR.BYTE		= 0x01;	
-	#else
-		SCI0.SMR.BYTE		= 0x00;	
-	#endif
-	
-	SCI0.BRR = ((48*1000000)/((64/(1+SCI0.SEMR.BIT.ABCS))*powf(2,2*SCI0.SMR.BIT.CKS-1)*BITRATE_0)-1);
-	
-	for( bit_count = 0; bit_count < 0x800000; bit_count++ ){	//１ビット待つため
-	}
-	SCI0.SCR.BYTE		= 0x70;		//送受信動作を許可
-	
-	IEN(SCI0,RXI0) = 1;
-	IPR(SCI0,RXI0) = 11;
-}
-
-void init_Sci_1(void)	//SCI1版
-{
-	
-	int bit_count = 0;
-
-	SYSTEM.MSTPCRB.BIT.MSTPB30 = 0;	//SCI1モジュールSTOP状態を解除
-	
-	SCI1.SCR.BYTE		= 0x00;		//シリアルコントロールレジスタ
-	
-	PORT3.DDR.BIT.B0	= 0;		//
-	
-	PORT3.ICR.BIT.B0	= 1;		//
-	
-	SCI1.SEMR.BIT.ABCS	= 1;		//調歩同期基本クロックを８サイクルの期間を１ビット期間の転送レートとする
-	
-	#if BITRATE_1 == 9600
-		SCI1.SMR.BYTE		= 0x01;	
-	#else
-		SCI1.SMR.BYTE		= 0x00;	
-	#endif
-	
-	SCI1.BRR = ((48*1000000)/((64/(1+SCI1.SEMR.BIT.ABCS))*powf(2,2*SCI1.SMR.BIT.CKS-1)*BITRATE_1)-1);	
-	for( bit_count = 0; bit_count < 0x800000; bit_count++ ){	//１ビット待つため
-	}
-	
-	SCI1.SCR.BYTE		= 0x30;		//送受信動作を許可
-
-}
-
-void init_Sci_2(void)//追加
-{
-	int bit_count = 0;	
-	
-	SYSTEM.MSTPCRB.BIT.MSTPB29 = 0;	//SCI1モジュールSTOP状態を解除
-	SCI2.SCR.BYTE		= 0x00;		//シリアルコントロールレジスタ
-										//河原 0x01→0x00 で通信速度を最大に．分周1
-	PORT1.DDR.BIT.B2	= 0;		//
-	PORT1.ICR.BIT.B2	= 1;		//
-	PORT1.DDR.BIT.B3 	= 0;	//追加
-	PORT1.ICR.BIT.B3 	= 1;	//追加
-	
-	//SCI2.BRR		= 12;		//ビットレートレジスタ77  9600bpsなら0x01の77
-									//河原77→12 通信速度を230400bpsに設定
-	SCI2.SEMR.BIT.ABCS	= 1;		//調歩同期基本クロックを８サイクルの期間を１ビット期間の転送レートとする
-	
-	#if BITRATE_2 == 9600
-		SCI2.SMR.BYTE		= 0x01;	
-	#else
-		SCI2.SMR.BYTE		= 0x00;	
-	#endif
-	
-	SCI2.BRR = ((48*1000000)/((64/(1+SCI2.SEMR.BIT.ABCS))*powf(2,2*SCI2.SMR.BIT.CKS-1)*BITRATE_2)-1);
-	
-	for( bit_count = 0; bit_count < 0x800000; bit_count++ ){	//１ビット待つため
-	}
-	SCI2.SCR.BYTE		= 0x70;		//送受信動作を許可
-	
-	IEN(SCI2,RXI2) = 1;
-	IPR(SCI2,RXI2) = 11;
-}
+float straight_output_x(void);
+float straight_output_y(void);
+float turn_output(void);
+float Turn_PD(float target_degree , float now_degree);
+float get_target_degree(float target_x,float target_y,float x_now,float y_now);
+float get_distance(float target_x,float target_y,float x_now,float y_now);
+float revision_degree(float degree);
+void get_motor_output(float x_start,  float y_start,  float x_now,  float y_now,  float target_x, float target_y, float degree_now, float a_up,  float a_down,  float max_velocity,  int task);
+int main(void);
 
 void All_setup(void)
 {
@@ -455,20 +170,23 @@ void All_setup(void)
 *	  作成者 ： 石井
 *	  作成日 ： 2014/07/17
 ******************************************************************************/
-
-void over_flow_MTU1(){
+void over_flow_MTU1()
+{
 	g_over_vertical_count += 1;
 }
 
-void under_flow_MTU1(){
+void under_flow_MTU1()
+{
 	g_under_vertical_count += 1;
 }
 
-void over_flow_MTU2(){
+void over_flow_MTU2()
+{
 	g_over_horizontal_count += 1;
 }
 
-void under_flow_MTU2(){
+void under_flow_MTU2()
+{
 	g_under_horizontal_count += 1;
 }
 
@@ -1204,8 +922,7 @@ void input_R1350N(void)
 //	unsigned int reserved;
 	unsigned char check_sum;
 	char string[20] = {0};
-	static int start_flug	= 0;
-	
+	static int start_flug	= 0;	
 	
 	g_input_r1350n[i] = Receive_uart_c_SCI2();	
 	
@@ -1316,8 +1033,8 @@ void input_R1350N(void)
 *	  作成者 ： 石井
 *	  作成日 ： 2014/09/25
 ******************************************************************************/
-float straight_output_x( void ){
-	
+float straight_output_x( void )
+{	
 	float straight_cal_x = 0.00;
 	
 	straight_cal_x = ( 255.0 - (float)LEFT_STICK_HIGH ) / 255.0;
@@ -1337,8 +1054,8 @@ float straight_output_x( void ){
 *	  作成者 ： 石井
 *	  作成日 ： 2014/09/25
 ******************************************************************************/
-float straight_output_y( void ){
-	
+float straight_output_y( void )
+{	
 	float straight_cal_y = 0.00;
 	
 	straight_cal_y = ( 255.0 - (float)LEFT_STICK_WIDE ) / 255.0;
@@ -1359,8 +1076,8 @@ float straight_output_y( void ){
 *	  作成者 ： 石井
 *	  作成日 ： 2014/09/25
 ******************************************************************************/
-float turn_output( void ){
-	
+float turn_output( void )
+{	
 	float turn_cal = 0.00;
 	
 	turn_cal = ( 255.0 - (float)RIGHT_STICK_WIDE ) / 255.0;
@@ -1431,57 +1148,25 @@ float get_target_degree(float target_x,float target_y,float x_now,float y_now)
 }
 
 /******************************************************************************
-*	タイトル： 角度のズレを返す
-*	  関数名 ： get_gap_degree
-*	  戻り値 ： float 型
-*	    引数1： float型 target_degree
-*          引数2 :  floa型t degree_now
-*	  作成者 ： 坂下文彦
-*	  作成日 ： 2013/08/30
-******************************************************************************/
-float get_gap_degree(float target_degree,float degree_now)
-{
-	int i = 0;
-
-	target_degree = target_degree - degree_now;//目標の角度と今の角度の差
-
-	for(i = 0;  i <= 4; i++){
-		//角度の範囲越え防止
-		if(target_degree > 180){
-			target_degree = target_degree - 360;
-		}
-		if(target_degree < -180){
-			target_degree = target_degree + 360;
-		}
-	}
-
-	if((target_degree > 180) || (target_degree < -180)){
-		return (0);
-	}else{
-		return (target_degree);
-	}
-}
-
-/******************************************************************************
-*	タイトル ： 2点間の距離(絶対値)を返す
+*	タイトル ：2点の距離
 *	  関数名 ： get_distance
 *	  戻り値 ： float型
 *	    引数1： float型 target_x
 *	    引数2： float型 target_y
-*	    引数3： float型 x_now
-*	    引数4： float型 y_now
-*	  作成者 ： 坂下文彦
-*	  作成日 ： 2013/08/30
+*	    引数3： float型 now_x
+*	    引数4： float型 now_y
+*	  作成者 ： 石井岳史
+*	  作成日 ： 2014/09/26
 ******************************************************************************/
-float get_distance(float target_x,float target_y,float x_now,float y_now)
+float get_distance(float target_x,float target_y,float now_x,float now_y)
 {
-	float distance = 0.0;
-	distance = fabs( sqrtf(powf(target_x - x_now,2.0) + powf(target_y - y_now,2.0)));//distance =| √(x^2 + y^2)|
+	float distance = 0.00;
+	distance = sqrtf(powf(target_x - now_x,2) + powf(target_y - now_y,2));
 	return (distance);
 }
 
 /******************************************************************************
-*	タイトル ： 角度を範囲内に収める関数
+*	タイトル ：角度を範囲内に収める
 *	  関数名 ： revision_degree
 *	  戻り値 ： float型 
 *	   引数1 ： float型 degree  
@@ -1500,74 +1185,61 @@ float revision_degree(float degree)
 }
 
 /******************************************************************************
-*	タイトル ： 速度台形制御出力計算(改良)
-*	  関数名 ： calculate_motor_output_lrb_velocity
+*	タイトル ：目標速度、出力計算
+*	  関数名 ： get_motor_output
 *	  戻り値 ： void型
 *	    引数1： float型 target_x
 *	    引数2： float型 target_y
-*	    引数3： float型 x_now
-*	    引数4： float型 y_now
-*	    引数5： float型 degree_now
+*	    引数3： float型 now_x
+*	    引数4： float型 now_y
+*	    引数5： float型 degree
 *	    引数6： float型 a_up
 *	    引数7： float型 a_down
 *	    引数8： float型 max_velocity
-*	  作成者 ： 坂下文彦
-*	  作成日 ： 2014/03/03
+*	  作成者 ： 石井岳史
+*	  作成日 ： 2014/09/26
 ******************************************************************************/
-void calculate_motor_output_lrb_velocity(float x_start,  float y_start,  float x_now,  float y_now,  float target_x, float target_y, float degree_now, float a_up,  float a_down,  float max_velocity,  int task)
+void get_motor_output(float x_start,  float y_start,  float now_x,  float now_y,  float target_x, float target_y, float degree, float a_up,  float a_down,  float max_velocity,  int task)
 {
-	float direction_velocity = 0.0,	gap_now = 0.0,	motor_output = 0.0,	motor_output_x = 0.0,	motor_output_y = 0.0,
-		x_degree_reverse = 0.0,	y_degree_reverse = 0.0,	distance_rest = 0.0,	direction_degree_now = 0.0,	direction_target_degree = 0.0,	p_gain = 0.15,x_target_velocity = 0.00 , y_target_velocity = 0.00,
-		gap_x_v=0.00,gap_y_v=0.00;
-	static float target_velocity = 0.0;
+	float	motor_output_x 	= 0.00,
+		motor_output_y 	= 0.00,
+		target_distance 		= 0.00,	
+		target_degree		= 0.00,
+		p_gain 			= 0.15,
+		x_target_velocity 	= 0.00, 
+		y_target_velocity	 = 0.00;
+	static float target_velocity	= 0.00;
 	static int task_old = 0;
 	char string[100] = { 0 };
+	
 	if(task != task_old){
 		target_velocity = 0.0;
 	}
 
-	direction_target_degree = get_target_degree(target_x,target_y,x_start,y_start);
-	direction_degree_now = get_target_degree(target_x,target_y,x_now,y_now);
+	target_degree = get_target_degree(target_x,target_y,now_x,now_y);
 
-	direction_velocity = (g_velocity) * cos(convert_radian(get_gap_degree(direction_target_degree,direction_degree_now)));
+	target_distance = get_distance(target_x,target_y,now_x,now_y);
 
-	//目標速度
-	distance_rest = get_distance(target_x,target_y,x_now,y_now);
-
-	if(distance_rest > 0.5 * max_velocity * max_velocity / a_down ){
+	if(target_distance > 0.5 * max_velocity * max_velocity / a_down ){
 		if(target_velocity < max_velocity){
 			target_velocity += (a_up * 0.001 * INTERRUPT_TIME);
 		}else{
 			target_velocity = max_velocity;
 		}
 	}else{
-		target_velocity = sqrtf( 2 * a_down * distance_rest);
+		target_velocity = sqrtf( 2 * a_down * target_distance);
 	}
 	
-	x_target_velocity = target_velocity * cos(convert_radian(direction_degree_now));
-	y_target_velocity = target_velocity * sin(convert_radian(direction_degree_now));
+	x_target_velocity = target_velocity * cos(convert_radian(target_degree));
+	y_target_velocity = target_velocity * sin(convert_radian(target_degree));
 
-	gap_x_v = ( x_target_velocity - g_x_velocity ) * p_gain;
-	gap_y_v = ( y_target_velocity - g_y_velocity ) * p_gain;
-
-	if(gap_x_v < 0){//出力が負のとき、角度を180度反転
-		x_degree_reverse = 180.0;
-	}else{
-		x_degree_reverse = 0.0;
-	}
-	if(gap_y_v < 0){//出力が負のとき、角度を180度反転
-		y_degree_reverse = 180.0;
-	}else{
-		y_degree_reverse = 0.0;
-	}
+	motor_output_x = ( x_target_velocity - g_x_velocity ) * p_gain;
+	motor_output_y = ( y_target_velocity - g_y_velocity ) * p_gain;
 	
-	motor_output_x =gap_x_v;
-	motor_output_y =gap_y_v ;
-
-	motor_output_velocity.lf = get_motor_output_lf(motor_output_x,motor_output_y,degree_now);
-	motor_output_velocity.rf = get_motor_output_rf(motor_output_x,motor_output_y,degree_now);
-	motor_output_velocity.lb = get_motor_output_lb(motor_output_x,motor_output_y,degree_now);
-	motor_output_velocity.rb = get_motor_output_rb(motor_output_x,motor_output_y,degree_now);
+	motor_output_velocity.lf = get_motor_output_lf(motor_output_x,motor_output_y,degree);
+	motor_output_velocity.rf = get_motor_output_rf(motor_output_x,motor_output_y,degree);
+	motor_output_velocity.lb = get_motor_output_lb(motor_output_x,motor_output_y,degree);
+	motor_output_velocity.rb = get_motor_output_rb(motor_output_x,motor_output_y,degree);
 //	sprintf(string,"%f,%f,%f,%f,%f,%f,%f,%f\n\r",motor_output,motor_output_x,motor_output_y,direction_degree_now,direction_velocity,target_velocity,target_x,target_y);
 //	transmission_string(string);
 	task_old = task;
@@ -1608,15 +1280,15 @@ int main(void)
 		target_degree 			= 0.00;
 		
 	float	Motor_output_turn 		= 0.00,
-		task_start_x			= START_X,
-		task_start_y			= START_Y;
+		task_start_x			= START_X_COORDNATES,
+		task_start_y			= START_Y_COORDNATES;
 		
 	float	a_up 				= 2000.0,
 		a_down 				= 2000.0,
 		max_velocity 			= 2000.0;
 		
-	float old_x = START_X,
-		old_y = START_Y;
+	float old_x = START_X_COORDNATES,
+		old_y = START_Y_COORDNATES;
 		
 	char string[100] = { 0 };
 	
@@ -1634,7 +1306,7 @@ int main(void)
 	PORTD.DDR.BIT.B7 = 1;
 	
 	while(1){
-		if( g_interrupt_timer_count2 >= 4000 ){
+		if( g_interrupt_timer_count2 >= 400 ){
 			if(g_interrupt_timer_count >= INTERRUPT_TIME){
 				g_interrupt_timer_count = 0;
 				
@@ -1658,7 +1330,7 @@ int main(void)
 				g_y_velocity = (g_y_coordnates - old_y) / ( (float)INTERRUPT_TIME / 1000 );
 				g_velocity = pow(pow((g_x_coordnates - old_x) / ( (float)INTERRUPT_TIME / 1000 ),2) + pow((g_y_coordnates - old_y) / ( (float)INTERRUPT_TIME / 1000 ),2),0.5);
 				
-				calculate_motor_output_lrb_velocity( task_start_x , task_start_y , g_x_coordnates , g_y_coordnates, COORD[task].X , COORD[task].Y , degree , a_up , a_down , max_velocity , task );
+				get_motor_output( task_start_x , task_start_y , g_x_coordnates , g_y_coordnates, COORD[task].X , COORD[task].Y , degree , a_up , a_down , max_velocity , task );
 //				get_target_angular_velocity(difference_degree, angle_a_up, angle_a_down, max_angular_velocity);
 				target_degree = revision_degree(target_degree + turn_output());
 				
@@ -1670,8 +1342,8 @@ int main(void)
 					task_start_x = g_x_coordnates;
 					task_start_y = g_y_coordnates;
 				}
-//				sprintf(string,"%f%f,%f,%d\n\r",g_velocity,g_x_coordnates,g_y_coordnates,task);
-//				transmission_string(string);
+				sprintf(string,"%f,%f,%f,%d\n\r",degree,g_x_coordnates,g_y_coordnates,task);
+				transmission_string(string);
 				
 				old_vertical_enc_count = vertical_enc_count;
 				old_horizontal_enc_count = horizontal_enc_count;
@@ -1681,8 +1353,8 @@ int main(void)
 				
 				if(g_interrupt_timer_count3 > 400 ){
 					g_interrupt_timer_count3 = 0;
-					sprintf(string,"%f\n\r",g_velocity);
-					transmission_string(string);
+//					sprintf(string,"%f\n\r",g_velocity);
+//					transmission_string(string);
 				}
 				if(motor == OFF){
 					Move( 0, 0, 0, 0);

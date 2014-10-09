@@ -5,6 +5,10 @@
 -input=DefaultBuild\1st\resetprg.obj
 -input=DefaultBuild\1st\sbrk.obj
 -input=DefaultBuild\1st\vecttbl.obj
+-input=DefaultBuild\1st\init.obj
+-input=DefaultBuild\1st\transmission.obj
+-input=DefaultBuild\1st\calculate_motor_output.obj
+-input=DefaultBuild\1st\calculate.obj
 -noprelink
 -nodebug
 -output=DefaultBuild\1st\62Ntest.abs

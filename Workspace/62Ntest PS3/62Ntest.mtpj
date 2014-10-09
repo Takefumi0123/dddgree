@@ -68,6 +68,7 @@
       <RelativePath>sbrk.h</RelativePath>
       <TreeImageGuid>03cad1e8-2eb3-4cde-a8a3-982423631122</TreeImageGuid>
       <ParentItem>4d3fbbbd-384a-458a-b8a4-c5b4da2724af</ParentItem>
+      <Property>18cb728e-165c-4b07-8afd-1279ef476efb</Property>
     </Instance>
     <Instance Guid="c5ab9c30-f12f-4945-b5d8-75fe16a0f3b1">
       <Name>stacksct.h</Name>
@@ -83,6 +84,22 @@
       <TreeImageGuid>03cad1e8-2eb3-4cde-a8a3-982423631122</TreeImageGuid>
       <ParentItem>4d3fbbbd-384a-458a-b8a4-c5b4da2724af</ParentItem>
     </Instance>
+    <Instance Guid="230be363-8a82-43a9-906d-793f156859fe">
+      <Name>transmission.c</Name>
+      <Type>File</Type>
+      <RelativePath>transmission.c</RelativePath>
+      <TreeImageGuid>941832c1-fc3b-4e1b-94e8-01ea17128b42</TreeImageGuid>
+      <ParentItem>4d3fbbbd-384a-458a-b8a4-c5b4da2724af</ParentItem>
+      <Property>c0f66c27-2f5e-454d-9677-3374ab6ca0e9</Property>
+    </Instance>
+    <Instance Guid="5f87b985-5a18-4098-b979-30defcc517d8">
+      <Name>transmission.h</Name>
+      <Type>File</Type>
+      <RelativePath>transmission.h</RelativePath>
+      <TreeImageGuid>03cad1e8-2eb3-4cde-a8a3-982423631122</TreeImageGuid>
+      <ParentItem>4d3fbbbd-384a-458a-b8a4-c5b4da2724af</ParentItem>
+      <Property>32fd9585-1fa5-4697-9d74-e7d6482510a0</Property>
+    </Instance>
     <Instance Guid="8d133ef3-2081-43e4-b035-3c9c9b44cb82">
       <Name>vect.h</Name>
       <Type>File</Type>
@@ -90,6 +107,54 @@
       <TreeImageGuid>03cad1e8-2eb3-4cde-a8a3-982423631122</TreeImageGuid>
       <ParentItem>4d3fbbbd-384a-458a-b8a4-c5b4da2724af</ParentItem>
       <Property>db3a80e3-04e2-427e-9a86-e1cd0b5b9636</Property>
+    </Instance>
+    <Instance Guid="6070360b-d8d3-4aac-9e6c-83be587f4070">
+      <Name>calculate.c</Name>
+      <Type>File</Type>
+      <RelativePath>calculate.c</RelativePath>
+      <TreeImageGuid>941832c1-fc3b-4e1b-94e8-01ea17128b42</TreeImageGuid>
+      <ParentItem>4d3fbbbd-384a-458a-b8a4-c5b4da2724af</ParentItem>
+      <Property>68727888-1574-4ea9-bfe8-122086a9836a</Property>
+    </Instance>
+    <Instance Guid="500df6c6-19a3-4a6c-8ceb-3c2d8d656399">
+      <Name>calculate.h</Name>
+      <Type>File</Type>
+      <RelativePath>calculate.h</RelativePath>
+      <TreeImageGuid>03cad1e8-2eb3-4cde-a8a3-982423631122</TreeImageGuid>
+      <ParentItem>4d3fbbbd-384a-458a-b8a4-c5b4da2724af</ParentItem>
+      <Property>c88f08d5-18f3-40c7-8129-658bf35ecde9</Property>
+    </Instance>
+    <Instance Guid="8954895f-4ab1-45d7-891d-f1abf5725b91">
+      <Name>init.c</Name>
+      <Type>File</Type>
+      <RelativePath>init.c</RelativePath>
+      <TreeImageGuid>941832c1-fc3b-4e1b-94e8-01ea17128b42</TreeImageGuid>
+      <ParentItem>4d3fbbbd-384a-458a-b8a4-c5b4da2724af</ParentItem>
+      <Property>a31defd5-d4b6-45b7-9a94-1078a83250dc</Property>
+    </Instance>
+    <Instance Guid="08aa5812-8846-4c10-8060-8affb99d291f">
+      <Name>init.h</Name>
+      <Type>File</Type>
+      <RelativePath>init.h</RelativePath>
+      <TreeImageGuid>03cad1e8-2eb3-4cde-a8a3-982423631122</TreeImageGuid>
+      <ParentItem>4d3fbbbd-384a-458a-b8a4-c5b4da2724af</ParentItem>
+      <Property>277a233a-2226-45a9-b2e0-b01707a0cc81</Property>
+    </Instance>
+    <Instance Guid="777744ef-7d4e-47dc-b185-c2b297abeb56">
+      <Name>calculate_motor_output.c</Name>
+      <Type>File</Type>
+      <RelativePath>calculate_motor_output.c</RelativePath>
+      <TreeImageGuid>941832c1-fc3b-4e1b-94e8-01ea17128b42</TreeImageGuid>
+      <ParentItem>4d3fbbbd-384a-458a-b8a4-c5b4da2724af</ParentItem>
+      <Property>1d6160af-c418-4949-96cd-a5a5cdd58be1</Property>
+    </Instance>
+    <Instance Guid="1c787579-20cc-489b-b9e7-bf7db774f0d0">
+      <Name>calculate_motor_output.h</Name>
+      <Type>File</Type>
+      <RelativePath>calculate_motor_output.h</RelativePath>
+      <TreeImageGuid>03cad1e8-2eb3-4cde-a8a3-982423631122</TreeImageGuid>
+      <ParentItem>4d3fbbbd-384a-458a-b8a4-c5b4da2724af</ParentItem>
+      <Property>f4907f45-fc63-473c-8e20-6eab88737648</Property>
     </Instance>
   </Class>
   <Class Guid="fb98844b-2c27-4275-9804-f6e63e204da0">
@@ -110,9 +175,31 @@
     <Instance Guid="db3a80e3-04e2-427e-9a86-e1cd0b5b9636">
       <MemoCount>0</MemoCount>
     </Instance>
-  </Class>
-  <Class Guid="78a5c5cd-76cb-4bcc-a031-3020011fbc9a">
-    <Instance Guid="37202d70-25c5-4aae-aa12-2959b68f7d6d">
+    <Instance Guid="a31defd5-d4b6-45b7-9a94-1078a83250dc">
+      <MemoCount>0</MemoCount>
+    </Instance>
+    <Instance Guid="277a233a-2226-45a9-b2e0-b01707a0cc81">
+      <MemoCount>0</MemoCount>
+    </Instance>
+    <Instance Guid="32fd9585-1fa5-4697-9d74-e7d6482510a0">
+      <MemoCount>0</MemoCount>
+    </Instance>
+    <Instance Guid="c0f66c27-2f5e-454d-9677-3374ab6ca0e9">
+      <MemoCount>0</MemoCount>
+    </Instance>
+    <Instance Guid="f4907f45-fc63-473c-8e20-6eab88737648">
+      <MemoCount>0</MemoCount>
+    </Instance>
+    <Instance Guid="1d6160af-c418-4949-96cd-a5a5cdd58be1">
+      <MemoCount>0</MemoCount>
+    </Instance>
+    <Instance Guid="18cb728e-165c-4b07-8afd-1279ef476efb">
+      <MemoCount>0</MemoCount>
+    </Instance>
+    <Instance Guid="c88f08d5-18f3-40c7-8129-658bf35ecde9">
+      <MemoCount>0</MemoCount>
+    </Instance>
+    <Instance Guid="68727888-1574-4ea9-bfe8-122086a9836a">
       <MemoCount>0</MemoCount>
     </Instance>
   </Class>
@@ -165,7 +252,15 @@
       <SourceItemType4>CSource</SourceItemType4>
       <SourceItemGuid5>12a1bfff-b89a-44f7-ba91-41b03d86a127</SourceItemGuid5>
       <SourceItemType5>CSource</SourceItemType5>
-      <SourceItemCount>6</SourceItemCount>
+      <SourceItemGuid6>8954895f-4ab1-45d7-891d-f1abf5725b91</SourceItemGuid6>
+      <SourceItemType6>CSource</SourceItemType6>
+      <SourceItemGuid7>230be363-8a82-43a9-906d-793f156859fe</SourceItemGuid7>
+      <SourceItemType7>CSource</SourceItemType7>
+      <SourceItemGuid8>777744ef-7d4e-47dc-b185-c2b297abeb56</SourceItemGuid8>
+      <SourceItemType8>CSource</SourceItemType8>
+      <SourceItemGuid9>6070360b-d8d3-4aac-9e6c-83be587f4070</SourceItemGuid9>
+      <SourceItemType9>CSource</SourceItemType9>
+      <SourceItemCount>10</SourceItemCount>
       <LastDeviceChangedCounter>0</LastDeviceChangedCounter>
     </Instance>
     <Instance Guid="9e208646-ccba-4100-a676-29b1efe6545f">
@@ -597,7 +692,7 @@ D_2=R_2
       <LinkOptionOtherAdditionalOptionsForConvertFile-DefaultValue />
       <LinkOptionCommandLine-DefaultValue />
       <IsLockedByUser>False</IsLockedByUser>
-      <TimeTagModified--0>-8587910877457528455</TimeTagModified--0>
+      <TimeTagModified--0>-8587894459833431170</TimeTagModified--0>
       <LinkOptionCpu-0>False</LinkOptionCpu-0>
       <LinkOptionForm-0>Absolute</LinkOptionForm-0>
       <LinkOptionFormConvert-0>Stype</LinkOptionFormConvert-0>
@@ -967,6 +1062,38 @@ D_2=R_2
       <ItemAddTime>635448304577327588</ItemAddTime>
       <ItemAddTimeCount>10</ItemAddTimeCount>
     </Instance>
+    <Instance Guid="8954895f-4ab1-45d7-891d-f1abf5725b91">
+      <ItemAddTime>635477839167617894</ItemAddTime>
+      <ItemAddTimeCount>0</ItemAddTimeCount>
+    </Instance>
+    <Instance Guid="08aa5812-8846-4c10-8060-8affb99d291f">
+      <ItemAddTime>635477839167617894</ItemAddTime>
+      <ItemAddTimeCount>1</ItemAddTimeCount>
+    </Instance>
+    <Instance Guid="5f87b985-5a18-4098-b979-30defcc517d8">
+      <ItemAddTime>635477866601552333</ItemAddTime>
+      <ItemAddTimeCount>1</ItemAddTimeCount>
+    </Instance>
+    <Instance Guid="230be363-8a82-43a9-906d-793f156859fe">
+      <ItemAddTime>635477866601552333</ItemAddTime>
+      <ItemAddTimeCount>0</ItemAddTimeCount>
+    </Instance>
+    <Instance Guid="1c787579-20cc-489b-b9e7-bf7db774f0d0">
+      <ItemAddTime>635477878671679252</ItemAddTime>
+      <ItemAddTimeCount>1</ItemAddTimeCount>
+    </Instance>
+    <Instance Guid="777744ef-7d4e-47dc-b185-c2b297abeb56">
+      <ItemAddTime>635477878671679252</ItemAddTime>
+      <ItemAddTimeCount>0</ItemAddTimeCount>
+    </Instance>
+    <Instance Guid="500df6c6-19a3-4a6c-8ceb-3c2d8d656399">
+      <ItemAddTime>635477917237367411</ItemAddTime>
+      <ItemAddTimeCount>1</ItemAddTimeCount>
+    </Instance>
+    <Instance Guid="6070360b-d8d3-4aac-9e6c-83be587f4070">
+      <ItemAddTime>635477917237367411</ItemAddTime>
+      <ItemAddTimeCount>0</ItemAddTimeCount>
+    </Instance>
     <Instance Guid="a7be515f-f007-45ed-9059-4e1500c0f74d">
       <TimeTagModified-SourceItem0--0>-8587924056277448220</TimeTagModified-SourceItem0--0>
       <SourceItem0-IsLockedByUser>False</SourceItem0-IsLockedByUser>
@@ -992,6 +1119,22 @@ D_2=R_2
       <SourceItem5-IsLockedByUser>False</SourceItem5-IsLockedByUser>
       <SourceItem5-BuildingTarget-0>True</SourceItem5-BuildingTarget-0>
       <SourceItem5-IndividualCompileOption-0>False</SourceItem5-IndividualCompileOption-0>
+      <TimeTagModified-SourceItem6--0>-8587894521687157914</TimeTagModified-SourceItem6--0>
+      <SourceItem6-IsLockedByUser>False</SourceItem6-IsLockedByUser>
+      <SourceItem6-BuildingTarget-0>True</SourceItem6-BuildingTarget-0>
+      <SourceItem6-IndividualCompileOption-0>False</SourceItem6-IndividualCompileOption-0>
+      <TimeTagModified-SourceItem7--0>-8587894494253223475</TimeTagModified-SourceItem7--0>
+      <SourceItem7-IsLockedByUser>False</SourceItem7-IsLockedByUser>
+      <SourceItem7-BuildingTarget-0>True</SourceItem7-BuildingTarget-0>
+      <SourceItem7-IndividualCompileOption-0>False</SourceItem7-IndividualCompileOption-0>
+      <TimeTagModified-SourceItem8--0>-8587894482183096556</TimeTagModified-SourceItem8--0>
+      <SourceItem8-IsLockedByUser>False</SourceItem8-IsLockedByUser>
+      <SourceItem8-BuildingTarget-0>True</SourceItem8-BuildingTarget-0>
+      <SourceItem8-IndividualCompileOption-0>False</SourceItem8-IndividualCompileOption-0>
+      <TimeTagModified-SourceItem9--0>-8587894443617408397</TimeTagModified-SourceItem9--0>
+      <SourceItem9-IsLockedByUser>False</SourceItem9-IsLockedByUser>
+      <SourceItem9-BuildingTarget-0>True</SourceItem9-BuildingTarget-0>
+      <SourceItem9-IndividualCompileOption-0>False</SourceItem9-IndividualCompileOption-0>
     </Instance>
   </Class>
   <Class Guid="44fa27c9-0aa0-4297-bd3b-2c5c5bdb8881">
@@ -1242,6 +1385,11 @@ D_2=R_2
       <DebuggerProperty-HookProperty-HookTransaction-Broke-Length>0</DebuggerProperty-HookProperty-HookTransaction-Broke-Length>
       <DebuggerProperty-HookProperty-HookTransaction-Connected-Length>0</DebuggerProperty-HookProperty-HookTransaction-Connected-Length>
       <DebuggerProperty-HookProperty-HookTransaction-Disconnecting-Length>0</DebuggerProperty-HookProperty-HookTransaction-Disconnecting-Length>
+    </Instance>
+  </Class>
+  <Class Guid="78a5c5cd-76cb-4bcc-a031-3020011fbc9a">
+    <Instance Guid="37202d70-25c5-4aae-aa12-2959b68f7d6d">
+      <MemoCount>0</MemoCount>
     </Instance>
   </Class>
   <Class Guid="2a2c2a43-ecdb-4e88-80bd-e75f3e33db90">

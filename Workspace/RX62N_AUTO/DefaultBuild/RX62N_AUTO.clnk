@@ -5,6 +5,7 @@
 -input=DefaultBuild\RX62N_AUTO.obj
 -input=DefaultBuild\sbrk.obj
 -input=DefaultBuild\vecttbl.obj
+-input=DefaultBuild\init.obj
 -noprelink
 -output=DefaultBuild\RX62N_AUTO.abs
 -list=DefaultBuild\RX62N_AUTO.map

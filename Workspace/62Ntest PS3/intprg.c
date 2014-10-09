@@ -453,7 +453,6 @@ void Excep_SCI0_ERI0(void){ }
 
 // SCI0 RXI0
 void Excep_SCI0_RXI0(void){
-	PORT8.DR.BIT.B1 = 1;
 	receive_att();
 }
 
@@ -481,6 +480,7 @@ void Excep_SCI2_ERI2(void){ }
 // SCI2 RXI2
 void Excep_SCI2_RXI2(void){
 	
+	PORT8.DR.BIT.B1 = 1;
 	IR(SCI2,RXI2) = 0;
 	input_R1350N();
 }

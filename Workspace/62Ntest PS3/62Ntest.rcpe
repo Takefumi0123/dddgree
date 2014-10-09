@@ -17,7 +17,15 @@
       <Path>sbrk.h</Path>
       <Path>stacksct.h</Path>
       <Path>typedefine.h</Path>
+      <Path>transmission.c</Path>
+      <Path>transmission.h</Path>
       <Path>vect.h</Path>
+      <Path>calculate.c</Path>
+      <Path>calculate.h</Path>
+      <Path>init.c</Path>
+      <Path>init.h</Path>
+      <Path>calculate_motor_output.c</Path>
+      <Path>calculate_motor_output.h</Path>
     </Files>
     <Device Series="RX">R5F562N7BxFB</Device>
     <BuildOptions Name="CC-RX" Version="V2.01.00">
@@ -73,6 +81,10 @@
           <Path>DefaultBuild\resetprg.obj</Path>
           <Path>DefaultBuild\sbrk.obj</Path>
           <Path>DefaultBuild\vecttbl.obj</Path>
+          <Path>DefaultBuild\init.obj</Path>
+          <Path>DefaultBuild\transmission.obj</Path>
+          <Path>DefaultBuild\calculate_motor_output.obj</Path>
+          <Path>DefaultBuild\calculate.obj</Path>
         </LinkOrder>
         <CommonOptions>
           <IncludePathForC>.</IncludePathForC>

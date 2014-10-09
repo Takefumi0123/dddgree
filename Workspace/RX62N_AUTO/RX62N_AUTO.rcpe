@@ -12,6 +12,8 @@
       <Path>resetprg.c</Path>
       <Path>RX62N_AUTO.c</Path>
       <Path>sbrk.c</Path>
+      <Path>init.c</Path>
+      <Path>init.h</Path>
       <Path>vecttbl.c</Path>
       <Path>iodefine.h</Path>
       <Path>sbrk.h</Path>
@@ -29,6 +31,7 @@
           <Option>-isa=rxv1</Option>
           <Option>-fpu</Option>
           <Option>-lang=c</Option>
+          <Option>-include=.</Option>
           <Option>-output=obj</Option>
           <Option>-debug</Option>
           <Option>-optimize=0</Option>
@@ -71,8 +74,11 @@
           <Path>DefaultBuild\RX62N_AUTO.obj</Path>
           <Path>DefaultBuild\sbrk.obj</Path>
           <Path>DefaultBuild\vecttbl.obj</Path>
+          <Path>DefaultBuild\init.obj</Path>
         </LinkOrder>
-        <CommonOptions />
+        <CommonOptions>
+          <IncludePathForC>.</IncludePathForC>
+        </CommonOptions>
       </BuildMode>
     </BuildOptions>
   </Project>

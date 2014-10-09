@@ -1,4 +1,4 @@
-Renesas Optimizing Linker (W1.01.00 )             26-Sep-2014 20:15:28
+Renesas Optimizing Linker (W1.01.00 )             01-Oct-2014 18:05:06
 
 *** Options ***
 
@@ -10,6 +10,7 @@ Renesas Optimizing Linker (W1.01.00 )             26-Sep-2014 20:15:28
 -input=DefaultBuild\RX62N_AUTO.obj
 -input=DefaultBuild\sbrk.obj
 -input=DefaultBuild\vecttbl.obj
+-input=DefaultBuild\init.obj
 -noprelink
 -output=DefaultBuild\RX62N_AUTO.abs
 -list=DefaultBuild\RX62N_AUTO.map
@@ -34,13 +35,13 @@ B_2
 R_2
                                   00000084  00000091         e   2
 B
-                                  00000094  000004df       44c   4
+                                  00000094  000004cf       43c   4
 R
-                                  000004e0  000008df       400   4
+                                  000004d0  000008b7       3e8   4
 SU
-                                  000008e0  000009df       100   4
+                                  000008b8  000009b7       100   4
 SI
-                                  000009e0  00000cdf       300   4
+                                  000009b8  00000cb7       300   4
 PResetPRG
                                   ffff8000  ffff8030        31   1
 C_1
@@ -64,19 +65,19 @@ D_1
 D_2
                                   ffff8a40  ffff8a4d         e   2
 D
-                                  ffff8a50  ffff8e4f       400   4
+                                  ffff8a50  ffff8e37       3e8   4
 P
-                                  ffff8e50  ffffd01b      41cc   1
+                                  ffff8e38  ffffcee6      40af   1
 PIntPRG
-                                  ffffd01c  ffffd1d3       1b8   1
+                                  ffffcee7  ffffd09e       1b8   1
 W_1
-                                  ffffd1d4  ffffd1d4         0   1
+                                  ffffd09f  ffffd09f         0   1
 W_2
-                                  ffffd1d4  ffffd1d4         0   1
+                                  ffffd09f  ffffd09f         0   1
 W
-                                  ffffd1d4  ffffd1d4         0   1
+                                  ffffd09f  ffffd09f         0   1
 L
-                                  ffffd1d4  ffffd274        a1   4
+                                  ffffd0a0  ffffd148        a9   4
 $ADDR_C_FFFFFFA0
                                   ffffffa0  ffffffaf        10   1
 FIXEDVECT
