@@ -16,11 +16,14 @@
 float convert_radian(float degree)
 {
 	float radian = 0.0;
-	while(degree > 180){
-		degree -= 360;
-	}
-	while(degree < -180){
-		degree += 360;
+	int	i = 0;
+	
+	for(i = 0; i <= 4; i++){
+		if(degree > 180){
+			degree -= 360;
+		}else	if(degree < -180){
+			degree += 360;
+		}
 	}
 	radian = degree * (M_PI / 180);
 	return (radian);

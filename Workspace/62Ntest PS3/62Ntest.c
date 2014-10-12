@@ -20,54 +20,72 @@
 #include"calculate.h"
 #include "transmission.h"
 #include "calculate_motor_output.h"
-//#include "Move.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
 
+//よく変えるマクロ定義
+#define	PS3			//コントローラモード PS3 or PS2
+#define HIGH_SPEED_MODE		//コメントアウトすると全速力が出なくなる
+#define	MODE_SCIDATA_BOX	4	//シリアル通信で見たい変数の数
+#define LIMIT_MOTOR_DUTY_TIRE	95	//モーターの最高出力
+#define TURN_P_GAIN			1.5	//角度ロックPゲイン
+#define TURN_D_GAIN			10.0	//角度ロックDゲイン
+#define	INERTIA_PERCENT			0.7	//ポジションロックにおける慣性で進んだ距離決め
+#define OPERATE_DEGREE		90		//最高角速度　°/s
+#define	PWM_PER				50.0	//PWM変化量
+
+//右前モーター
 #define RIGHT_FLONT_CW		PORTB.DR.BIT.B3
 #define RIGHT_FLONT_CCW		PORTB.DR.BIT.B7
-#define LEFT_BACK_CW		PORT7.DR.BIT.B6
-#define LEFT_BACK_CCW		PORT7.DR.BIT.B4
-#define LEFT_FLONT_CW		PORT7.DR.BIT.B7
-#define LEFT_FLONT_CCW		PORT7.DR.BIT.B5
+#define RIGHT_FLONT_DUTY	MTU9.TGRD
+#define RIGHT_FLONT_MAX_DUTY	MTU9.TGRC
+//右後モーター
 #define RIGHT_BACK_CW		PORTB.DR.BIT.B2
 #define RIGHT_BACK_CCW		PORTB.DR.BIT.B6
-#define RIGHT_FLONT_DUTY	MTU9.TGRD
-#define LEFT_FLONT_DUTY		MTU4.TGRD
-#define LEFT_BACK_DUTY		MTU4.TGRB
 #define RIGHT_BACK_DUTY		MTU9.TGRB
-#define RIGHT_FLONT_MAX_DUTY	MTU4.TGRA
-#define LEFT_FLONT_MAX_DUTY	MTU9.TGRA
-#define LEFT_BACK_MAX_DUTY	MTU9.TGRC
-#define RIGHT_BACK_MAX_DUTY	MTU4.TGRC
-#define LIMIT_MOTOR_DUTY_TIRE	95	//モーターの最高出力
-#define BRAKE			1000
-#define PWM_PERIOD			(48000000/1) / 100000
-#define HIGH_SPEED_MODE		//コメントアウトすると全速力が出なくなる
+#define RIGHT_BACK_MAX_DUTY	MTU9.TGRA
+//左前モーター
+#define LEFT_FLONT_CW		PORT7.DR.BIT.B7
+#define LEFT_FLONT_CCW		PORT7.DR.BIT.B5
+#define LEFT_FLONT_DUTY		MTU4.TGRD
+#define LEFT_FLONT_MAX_DUTY	MTU4.TGRC
+//左後モーター
+#define LEFT_BACK_CW		PORT7.DR.BIT.B6
+#define LEFT_BACK_CCW		PORT7.DR.BIT.B4
+#define LEFT_BACK_DUTY		MTU4.TGRB
+#define LEFT_BACK_MAX_DUTY	MTU4.TGRA
+
+//ファン
+#define	FUN_DUTY		MTU10.TGRD
+
 #define ON			1
 #define OFF			0
 #define NO_DATA			0
 #define INTERRUPT_START		CMT.CMSTR0.BIT.STR0 = 1;	//カウント開始
-#define INTERRUPT_TIME 		5	
-#define STICK_NO_MOVE_RANGE	0.2		//足回りが動かないスティックの値の範囲
-#define OPERATE_DEGREE		90		//最高角速度　°/s
+#define INTERRUPT_TIME 		5
 #define M_PI 			3.14159265
-#define END '#'			//通信データの終端文字
-#define RECEIVE_STR_COLUMN 32	//1データあたりの最大文字数		例: a123# (6文字)
+#define BRAKE			1000
+#define STICK_NO_MOVE_RANGE	0.2		//足回りが動かないスティックの値の範囲
+
+#define	LED1				PORT8.DR.BIT.B0
+#define	LED2				PORT8.DR.BIT.B1
+#define	BUZZER				PORTD.DR.BIT.B7
+#define	AIR				PORT6.DR.BIT.B0
+
+#define PWM_PERIOD		(48000000/1) / 100000	
+
 #define VERTICAL_ENCODER	MTU1.TCNT
 #define HORIZONTAL_ENCODER	MTU2.TCNT
 #define DIAMETER_VERTICAL_WHEEL		51.0	//エンコーダータイヤ径
 #define DIAMETER_HORIZONTAL_WHEEL	51.0
 #define PULSE_VERTICAL_ENCODER		500	//エンコーダーパルス数
 #define PULSE_HORIZONTAL_ENCODER	500
-#define PCLK				48
-#define BITRATE_1			115200
-#define BITRATE_2			115200
-#define BITRATE_3			115200
-#define PWM_PERIOD			(48000000/1) / 100000
-#define TURN_P_GAIN			1.5	//角度ロックPゲイン
-#define TURN_D_GAIN			10.0	//角度ロックDゲイン
+
+#define END '#'			//通信データの終端文字
+#define RECEIVE_STR_COLUMN 32	//1データあたりの最大文字数		例: a123# (6文字)
+
+#ifdef	PS3
 #define LEFT_STICK_HIGH			g_AtoZ_value[0]
 #define LEFT_STICK_WIDE			g_atoz_value[0]
 #define RIGHT_STICK_WIDE		g_atoz_value[1]
@@ -85,11 +103,24 @@
 #define	KEY_R1				g_atoz_value[15]
 #define	KEY_L2				g_atoz_value[16]
 #define	KEY_R2				g_atoz_value[17]
-#define	PWM_PER				50.0
-#define	BUZZER				PORTD.DR.BIT.B7
-#define	MODE_SCIDATA_BOX		4
-#define	INERTIA_PERCENT			0.7	//ポジションロックにおける慣性で進んだ距離決め
-#define	FUN_DUTY			MTU10.TGRD
+#endif
+
+#ifdef	PS2
+#define	LEFT_STICK_HIGH			getdate3.byte.left_stick_high
+#define	LEFT_STICK_WIDE			getdate2.byte.left_stick_wide
+#define	RIGHT_STICK_WIDE		getdate2.byte.right_stick_wide
+#define KEY_UP				getdate1.byte.up_sw
+#define KEY_RIGHT			getdate1.byte.right_sw
+#define KEY_DOWN			getdate1.byte.down_sw
+#define	KEY_LEFT			getdate1.byte.left_sw
+#define	KEY_CROSS			getdate2.byte.cross_sw
+#define	KEY_CIRCLE			getdate2.byte.circle_sw
+#define	KEY_L1				getdate2.byte.l1_sw
+#define	KEY_R1				getdate2.byte.r1_sw
+#define	KEY_L2				getdate2.byte.l2_sw
+#define	KEY_R2				getdate2.byte.r2_sw
+#define	CON_STATE			getdate1.byte.model_number
+#endif
 
 //グローバル変数に格納する場合	おばかな例
 float g_atoz_value[26] = {127.00, 127.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 
@@ -106,31 +137,12 @@ float 	g_interrupt_timer_count = 0.00,
 int	g_over_vertical_count	 = 0, g_under_vertical_count = 0, g_over_horizontal_count = 0, g_under_horizontal_count = 0;
 float 	g_Angle_f;
 
+volatile unsigned long	g_controller_receive_1st	= 0;	//コントローラから帰ってくるデータの格納フォルダ1stは不定でよい。
+volatile unsigned long	g_controller_receive_2nd	= 0;
+volatile unsigned long	g_controller_receive_3rd	= 0;
+int 	getdate1 = 0, getdate2 = 0, getdate3 = 0;
 
 unsigned char  g_input_r1350n[15] = {0};
-
-void All_setup(void);
-void over_flow_MTU1(void);
-void under_flow_MTU1(void);
-void over_flow_MTU2(void);
-void under_flow_MTU2(void);
-void wait_interrupt(void);
-char Receive_uart_c_SCI0(void);
-char Receive_uart_c_SCI2(void);
-float	change_float(char *str);
-void receive_order_depot(int target_box, char *storage_str, int minus_flag, int after_point_count, int large_size_flag);
-void receive_order_c(char character);
-void receive_att(void);
-void Deadtime_right_flont_tire(void);
-void Deadtime_left_flont_tire(void);
-void Deadtime_left_back_tire(void);
-void Deadtime_right_back_tire(void);
-void input_R1350N(void);
-void cal_straight_output_x(void);
-void cal_straight_output_y(void);
-float	cal_add_turn(void);
-float Turn_PD(float target_degree , float now_degree);
-void position_lock(float target_x , float target_y , float degree_now , int lock_count);
 
 typedef	struct {
 	float	velocity;
@@ -159,9 +171,79 @@ typedef struct{
 	float sci_data7;
 	float sci_data8;
 }sci_data_t;
-sci_data_t	string;
-robodata_t	robo;
-motor_output_t	motor_output;
+
+union psdate1{
+	unsigned long dword;
+	struct{
+		unsigned char byte1;
+		unsigned char model_number;
+		unsigned char byte3;
+		unsigned char select_sw:1;
+		unsigned char l3_sw:1;
+		unsigned char r3_sw:1;
+		unsigned char start_sw:1;
+		unsigned char up_sw:1;
+		unsigned char right_sw:1;
+		unsigned char down_sw:1;
+		unsigned char left_sw:1;
+	}byte;
+};
+
+union psdate2{
+	unsigned long dword;
+	struct{
+		unsigned char l2_sw:1;
+		unsigned char r2_sw:1;
+		unsigned char l1_sw:1;
+		unsigned char r1_sw:1;
+		unsigned char triangle_sw:1;
+		unsigned char circle_sw:1;
+		unsigned char cross_sw:1;
+		unsigned char square_sw:1;
+		unsigned char right_stick_wide;
+		unsigned char right_stick_high;
+		unsigned char left_stick_wide;
+	}byte;
+};
+
+union psdate3{
+	unsigned long dword;
+	struct{
+		unsigned char left_stick_high;
+	}byte;
+};
+
+typedef struct{
+	float	rf;
+	float	rb;
+	float	lf;
+	float	lb;
+}motor_timer_count_t;
+
+motor_timer_count_t	motor_timer_count;
+
+void All_setup(void);
+void over_flow_MTU1(void);
+void under_flow_MTU1(void);
+void over_flow_MTU2(void);
+void under_flow_MTU2(void);
+void wait_interrupt(void);
+char Receive_uart_c_SCI0(void);
+char Receive_uart_c_SCI2(void);
+float	change_float(char *str);
+void receive_order_depot(int target_box, char *storage_str, int minus_flag, int after_point_count, int large_size_flag);
+void receive_order_c(char character);
+void receive_att(void);
+void Deadtime_right_flont_tire(void);
+void Deadtime_left_flont_tire(void);
+void Deadtime_left_back_tire(void);
+void Deadtime_right_back_tire(void);
+void input_R1350N(void);
+float cal_straight_output_x(float l_stick_high);
+float cal_straight_output_y(float l_stick_wide);
+float	cal_add_turn(float r_stick_wide);
+float Turn_PD(float target_degree , float now_degree);
+void position_lock(float target_x , float target_y , float degree_now , int lock_count , float now_x , float now_y ,motor_output_t	*motor_output);
 
 void All_setup(void)
 {
@@ -208,6 +290,46 @@ void wait_interrupt(void)
 	
 	g_interrupt_timer_count ++;
 	g_interrupt_timer_count2 ++;
+}
+
+/******************************************************************************
+*	タイトル ： SPI通信で受信したものを返す
+*	  関数名 ： Rspi_send_1
+*	  戻り値 ：unsigned lond型
+*	    引数 ： unsingned long moji
+******************************************************************************/
+unsigned long Rspi_send_1(unsigned long moji)
+{
+	RSPI1.SPDR.LONG = moji;
+	while( RSPI1.SPSR.BIT.SPRF == 0 );	//受信バッファになにか来るまで待つ
+	return RSPI1.SPDR.LONG;
+}
+/******************************************************************************
+*	タイトル ： SPI通信で受信したものを返す
+*	  関数名 ： Rspi_send_1
+*	  戻り値 ：unsigned lond型
+*	    引数 ： unsingned long moji
+******************************************************************************/
+unsigned long Rspi_send_short_1(unsigned short int moji)
+{
+	RSPI1.SPDR.LONG = moji;
+	while( RSPI1.SPSR.BIT.SPRF == 0 );	//受信バッファになにか来るまで待つ
+	return RSPI1.SPDR.LONG;
+}
+/******************************************************************************
+*	タイトル ： デュアルショックからの送信データを格納
+*	  関数名 ： Rspi_receive_send_line_dualshock
+*	  戻り値 ： void型
+*	    引数 ： なし
+******************************************************************************/
+void Rspi_recive_send_line_dualshock(void)	//DualShockアナログコントローラ(アナログモード緑LED)用送信プログラム
+{
+	while( RSPI1.SPSR.BIT.SPRF == 1 ){				//受信バッファがフルならリードしてクリアする
+		RSPI1.SPDR.LONG;
+	}	
+	g_controller_receive_1st = Rspi_send_1(0x00004201);
+	g_controller_receive_2nd = Rspi_send_1(0x00000000);
+	g_controller_receive_3rd = Rspi_send_short_1(0x00);
 }
 
 /******************************************************************************
@@ -331,7 +453,6 @@ void receive_att(void)
 {    
     char c;
     IR(SCI0,RXI0) = 0;
-//    PORT8.DR.BIT.B1 = 1;
     c = Receive_uart_c_SCI0();//受信データ
     receive_order_c(c);
 }
@@ -397,39 +518,39 @@ void input_R1350N(void)
 	}
 }
 
-void cal_straight_output_x( void )
+float cal_straight_output_x(float l_stick_high)
 {	
 	float straight_cal_x = 0.00;
 	
-	straight_cal_x = ( 255.0 - (float)LEFT_STICK_HIGH ) / 255.0;
+	straight_cal_x = ( 255.0 - l_stick_high) / 255.0;
 	straight_cal_x = ( straight_cal_x - 0.5 ) * 2;
 	if( fabs( straight_cal_x ) <= STICK_NO_MOVE_RANGE ){
 		straight_cal_x = 0;
 	}
 	straight_cal_x *= PWM_PER;
 	
-	motor_output.X = straight_cal_x;
+	return(straight_cal_x);
 }
 
-void cal_straight_output_y( void ){
+float cal_straight_output_y( float l_stick_wide ){
 	
 	float straight_cal_y = 0.00;
 	
-	straight_cal_y = ( 255.0 - (float)LEFT_STICK_WIDE ) / 255.0;
+	straight_cal_y = ( 255.0 - l_stick_wide ) / 255.0;
 	straight_cal_y = ( straight_cal_y - 0.5 ) * 2;
 	if( fabs( straight_cal_y ) <= STICK_NO_MOVE_RANGE ){
 		straight_cal_y = 0;
 	}
 	straight_cal_y *= PWM_PER;
 	
-	motor_output.Y = straight_cal_y;
+	return(straight_cal_y);
 }
 
-float cal_add_turn( void )
+float	cal_add_turn( float r_stick_wide )
 {	
 	float turn_cal = 0.00;
 	
-	turn_cal = ( 255.0 - (float)RIGHT_STICK_WIDE ) / 255.0;
+	turn_cal = ( 255.0 - r_stick_wide ) / 255.0;
 	turn_cal = ( turn_cal - 0.5 ) * 2;
 	if( fabs( turn_cal ) <= STICK_NO_MOVE_RANGE ){
 		turn_cal = 0;
@@ -462,7 +583,7 @@ float Turn_PD(float target_degree , float now_degree)
 	return output;
 }	
 
-void position_lock(float target_x , float target_y , float degree_now , int lock_count)
+void position_lock(float target_x , float target_y , float degree_now , int lock_count , float now_x , float now_y ,motor_output_t	*motor_output)
 {
 	float  motor_output_x = 0.0,	motor_output_y = 0.0;
 	float p_gain = 0.02,d_gain = 0.2;
@@ -478,28 +599,28 @@ void position_lock(float target_x , float target_y , float degree_now , int lock
 	}
 
 //	gap_now = get_distance(target_x,target_y,robo.x_c,robo.y_c);
-	gap_x = fabs(target_x - robo.x_c);
-	gap_y = fabs(target_y - robo.y_c);
+	gap_x = fabs(target_x - now_x);
+	gap_y = fabs(target_y - now_y);
 
 //	motor_output = (p_gain * gap_now) + (d_gain * (gap_now - gap_old));
 //	gap_old = gap_now;
 
 //	motor_output_x = motor_output * cos(convert_radian(target_degree));
 //	motor_output_y = motor_output * sin(convert_radian(target_degree));
-	if(target_x - robo.x_c > 0){
+	if(target_x - now_x > 0){
 		motor_output_x = (p_gain * gap_x) + (d_gain * (gap_x - gap_old_x));
 	}else{
 		motor_output_x = -1 * ((p_gain * gap_x) + (d_gain * (gap_x - gap_old_x)));
 	}
-	if(target_y - robo.y_c > 0){
+	if(target_y - now_y > 0){
 		motor_output_y = (p_gain * gap_y) + (d_gain * (gap_y - gap_old_y));
 	}else{
 		motor_output_y = -1 * ((p_gain * gap_y) + (d_gain * (gap_y - gap_old_y)));
 	}
-	motor_output.lf = get_motor_output_lf(motor_output_x,motor_output_y,degree_now);
-	motor_output.rf = get_motor_output_rf(motor_output_x,motor_output_y,degree_now);
-	motor_output.lb = get_motor_output_lb(motor_output_x,motor_output_y,degree_now);
-	motor_output.rb = get_motor_output_rb(motor_output_x,motor_output_y,degree_now);
+	motor_output->lf = get_motor_output_lf(motor_output_x,motor_output_y,degree_now);
+	motor_output->rf = get_motor_output_rf(motor_output_x,motor_output_y,degree_now);
+	motor_output->lb = get_motor_output_lb(motor_output_x,motor_output_y,degree_now);
+	motor_output->rb = get_motor_output_rb(motor_output_x,motor_output_y,degree_now);
 	
 	lock_count_old = lock_count;
 	gap_old_x = gap_x;
@@ -508,7 +629,7 @@ void position_lock(float target_x , float target_y , float degree_now , int lock
 //	transmission_string(string);
 }
 
-void calculate_coordnates(void)
+void calculate_coordnates(robodata_t	*robo)
 {
 	int	vertical_enc_count = 0,
 		horizontal_enc_count = 0;
@@ -531,10 +652,10 @@ void calculate_coordnates(void)
 	
 	if(add_distance_horizontal != 0 || add_distance_vertical != 0 ){
 		add_distance_degree = atan2( add_distance_horizontal , add_distance_vertical ) * 180 / M_PI;
-		robo.x_c += add_distance * cos( convert_radian( add_distance_degree + robo.degree  )); 
-		robo.y_c += add_distance * sin( convert_radian( add_distance_degree + robo.degree  ));
+		robo->x_c += add_distance * cos( convert_radian( add_distance_degree + robo->degree  )); 
+		robo->y_c += add_distance * sin( convert_radian( add_distance_degree + robo->degree  ));
 	}
-	robo.velocity = add_distance / ( (float)INTERRUPT_TIME / 1000 );
+	robo->velocity = add_distance / ( (float)INTERRUPT_TIME / 1000 );
 	
 	old_vertical_enc_count = vertical_enc_count;
 	old_horizontal_enc_count = horizontal_enc_count;
@@ -598,37 +719,14 @@ void sci_transformer(sci_data_t	*string)
 	transmission_string("\n\r");
 }
 
-
-
-typedef struct{
-	float	rf;
-	float	rb;
-	float	lf;
-	float	lb;
-}motor_timer_count_t;
-
-motor_timer_count_t	motor_timer_count;
-
 void wait_timer_count(void)
 {
-	IR(CMT0,CMI0) = OFF;
-    PORT8.DR.BIT.B1 = 1;	
+	IR(CMT0,CMI0) = OFF;	
 	motor_timer_count.rf ++;
 	motor_timer_count.rb ++;
 	motor_timer_count.lf ++;
 	motor_timer_count.lb ++;
 }
-
-/******************************************************************************
-*	タイトル ： モータ関数
-*	  関数名 ： Move
-*	  戻り値 ： void型
-*	    引数1： float型 left_duty
-*	    引数2： float型 right_duty
-*	    引数3： float型 back_duty
-*	  作成者 ： 坂下文彦
-*	  作成日 ： 2013/10/24
-******************************************************************************/
 
 /******************************************************************************
 *	タイトル ： 右前タイヤの出力リセット
@@ -992,6 +1090,16 @@ void Move_right_back_tire(float right_back_duty ,float limit_duty)
 	right_back_duty_old = right_back_duty;
 }
 
+/******************************************************************************
+*	タイトル ： モータ関数
+*	  関数名 ： Move
+*	  戻り値 ： void型
+*	    引数1： float型 left_duty
+*	    引数2： float型 right_duty
+*	    引数3： float型 back_duty
+*	  作成者 ： 坂下文彦
+*	  作成日 ： 2013/10/24
+******************************************************************************/
 void Move(float	right_flont_duty, float	left_flont_duty,float	left_back_duty,	float	right_back_duty ,float limit_duty)
 {
 	Move_left_flont_tire(left_flont_duty,limit_duty);
@@ -1000,6 +1108,30 @@ void Move(float	right_flont_duty, float	left_flont_duty,float	left_back_duty,	fl
 	Move_right_back_tire(right_back_duty,limit_duty);
 }
 
+void air_mode(float air_key)
+{
+	static int	change_flug = 0;
+	
+	if( air_key >= 1 && change_flug == 1){
+		AIR = 1 - AIR;
+	}else	if( air_key == 0 ){
+		change_flug = 0;
+	}
+}
+
+void	controler_error(void)
+{
+	BUZZER = ON;
+	
+	LEFT_FLONT_CW = OFF;
+	LEFT_FLONT_CCW = OFF;
+	LEFT_BACK_CW = OFF;
+	LEFT_BACK_CCW = OFF;
+	RIGHT_FLONT_CW = OFF;
+	RIGHT_FLONT_CCW = OFF;
+	RIGHT_BACK_CW = OFF;
+	RIGHT_BACK_CCW = OFF;
+}
 
 int main(void)
 {
@@ -1021,52 +1153,71 @@ int main(void)
 	int stop_flug_count = 0;
 	
 	sci_data_t	string = {0.0};
+	robodata_t	robo;
+	motor_output_t	motor_output;	
+	
+	union psdate1 getdate1;
+	union psdate2 getdate2;
+	union psdate3 getdate3;	
+	
+
 	
 	All_setup();
 	
 	while(1){
-		
+	
 		if(g_interrupt_timer_count >= INTERRUPT_TIME){
 			
 			g_interrupt_timer_count = 0;
 			
+#ifdef	PS2			
+			//デュアルショックの値を取る
+			Rspi_recive_send_line_dualshock();
+			getdate1.dword = g_controller_receive_1st;
+			getdate2.dword = g_controller_receive_2nd;
+			getdate3.dword = g_controller_receive_3rd;
+#endif
+
 			if( fabs( -g_Angle_f - old_degree ) < 30 || fabs( -g_Angle_f - old_degree ) > 330){
 				robo.degree = -g_Angle_f;
 			}
-			calculate_coordnates();
+			calculate_coordnates(&robo);
 
-			cal_straight_output_x();
-			cal_straight_output_y();
+			motor_output.X = cal_straight_output_x((float) LEFT_STICK_HIGH);
+			motor_output.Y = cal_straight_output_y((float) LEFT_STICK_WIDE);
 			
-			target_degree = revision_degree(target_degree + cal_add_turn());
+			target_degree =	revision_degree(target_degree +	cal_add_turn((float)RIGHT_STICK_WIDE));
 
-			motor_output.TURN = Turn_PD( target_degree , robo.degree );
+			motor_output.TURN =	Turn_PD( target_degree , robo.degree );
 			
 			motor_output.lf = get_motor_output_lf( motor_output.X, motor_output.Y, 0.0 );
 			motor_output.rf = get_motor_output_rf( motor_output.X, motor_output.Y, 0.0 );
 			motor_output.lb = get_motor_output_lb( motor_output.X, motor_output.Y, 0.0 );
 			motor_output.rb = get_motor_output_rb( motor_output.X, motor_output.Y, 0.0 );
-
+			
+#ifdef PS3	
 			if(old_accel1 == ACCEL_X && old_accel2 == ACCEL_Y ){
 				stop_flug_count ++;
 			}else{
 				stop_flug_count = 0;
 			}
+			old_accel1 = ACCEL_X;
+			old_accel2 = ACCEL_Y;
+#endif
+
+#ifdef PS2	
+			if(CON_STATE != 's'){
+				stop_flug_count ++;
+			}else{
+				stop_flug_count = 0;
+			}
+#endif
 			
 			if( stop_flug_count >= 120 ){
-				BUZZER = ON;
-				
-				LEFT_FLONT_CW = OFF;
-				LEFT_FLONT_CCW = OFF;
-				LEFT_BACK_CW = OFF;
-				LEFT_BACK_CCW = OFF;
-				RIGHT_FLONT_CW = OFF;
-				RIGHT_FLONT_CCW = OFF;
-				RIGHT_BACK_CW = OFF;
-				RIGHT_BACK_CCW = OFF;
+				controler_error();
 			}
 #ifdef HIGH_SPEED_MODE	
-			else if(KEY_UP > 10){
+			else if	(KEY_UP > 10){
 				lock_count_old = lock_count;
 				BUZZER = OFF;
 				
@@ -1087,12 +1238,12 @@ int main(void)
 				motor_output.lb = high_speed_output;
 			}
 #endif
-			else if( KEY_CROSS >= 1 || ( motor_output.X == 0.00 && motor_output.Y == 0.00 && cal_add_turn() == 0.00) ){
+			else if( KEY_CROSS >= 1 || ( motor_output.X == 0.00 && motor_output.Y == 0.00 && cal_add_turn((float)RIGHT_STICK_WIDE) == 0.00) ){
 				BUZZER= OFF;
 				if(lock_count == lock_count_old){
 					lock_count ++;
 				}
-				position_lock( position_lock_x , position_lock_y ,robo.degree, lock_count);
+				position_lock( position_lock_x , position_lock_y ,robo.degree, lock_count, robo.x_c, robo.y_c, &motor_output);
 				
 			}else if( KEY_CROSS == 0 && stop_flug_count < 120 ){
 				lock_count_old = lock_count;
@@ -1115,9 +1266,11 @@ int main(void)
 			
 			if( stop_flug_count < 120 ){
 				Move( motor_output.rf + motor_output.TURN , motor_output.lf + motor_output.TURN, motor_output.lb + motor_output.TURN, motor_output.rb + motor_output.TURN ,limit_duty);
+			}else{
+				controler_error();
 			}
 			
-			if( stop_flug_count < 120 && KEY_CROSS == 0 && ( motor_output.X != 0.00 || motor_output.Y != 0.00 || cal_add_turn() == 0.00)){
+			if( stop_flug_count < 120 && KEY_CROSS == 0 && ( motor_output.X != 0.00 || motor_output.Y != 0.00 || cal_add_turn((float)RIGHT_STICK_WIDE) == 0.00)){
 				
 				if( robo.x_c - old_x_c > 0 ){
 					position_lock_x = robo.x_c + INERTIA_PERCENT * 1000 * ( pow((fabs( robo.x_c - old_x_c ) /  ( (float)INTERRUPT_TIME / 1000 )) * 60 * 60 / 1000000,2) / ( 254 * 0.35 ));
@@ -1131,22 +1284,19 @@ int main(void)
 					position_lock_y = robo.y_c - INERTIA_PERCENT * 1000 * ( pow((fabs( robo.y_c - old_y_c ) /  ( (float)INTERRUPT_TIME / 1000 )) * 60 * 60 / 1000000,2) / ( 254 * 0.35 ));
 				}
 			}
-
+			air_mode(KEY_CIRCLE);
 			
 			old_x_c = robo.x_c;
 			old_y_c = robo.y_c;
-			old_accel1 = ACCEL_X;
-			old_accel2 = ACCEL_Y;
 			old_degree = robo.degree;
-			
-			if(g_interrupt_timer_count2 >= INTERRUPT_TIME * 20 ){
-				g_interrupt_timer_count2 = 0;
-				string.sci_data1 = motor_output.X;
-				string.sci_data2 = motor_output.Y;
-				string.sci_data3 = KEY_L1;
-				string.sci_data4 = KEY_L2;
-				sci_transformer(&string);
-			}
 		}
+//		if(g_interrupt_timer_count2 >= INTERRUPT_TIME * 20 ){
+			g_interrupt_timer_count2 = 0;
+			string.sci_data1 = motor_output.X;
+			string.sci_data2 = motor_output.Y;
+			string.sci_data3 = KEY_L1;
+			string.sci_data4 = KEY_L2;
+			sci_transformer(&string);
+//		}
 	}
 }

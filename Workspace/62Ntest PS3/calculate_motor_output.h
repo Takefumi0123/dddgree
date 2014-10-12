@@ -10,7 +10,6 @@
 #include <stdlib.h>
 #include <math.h>
 
-//float convert_radian(float degree);
 float get_motor_output_lf(float motor_output_x,float motor_output_y,float degree_now);
 float get_motor_output_rf(float motor_output_x,float motor_output_y,float degree_now);
 float get_motor_output_lb(float motor_output_x,float motor_output_y,float degree_now);

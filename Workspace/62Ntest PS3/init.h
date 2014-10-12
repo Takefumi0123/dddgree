@@ -21,5 +21,6 @@ void init_all_encoder(void);
 void init_Sci_0(void);
 void init_Sci_1(void);
 void init_Sci_2(void);
+void init_Rspi_dualshock(void);
 
 #endif

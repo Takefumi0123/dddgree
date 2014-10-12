@@ -245,7 +245,7 @@ void init_Sci_0(void)
 	SCI0.SEMR.BIT.ABCS	= 1;		//調歩同期基本クロックを８サイクルの期間を１ビット期間の転送レートとする
 	SCI0.BRR			= ((48*1000000)/((64/(1+SCI0.SEMR.BIT.ABCS))*powf(2,2*SCI0.SMR.BIT.CKS-1)*BITRATE_0)-1);;		//ビットレートレジスタ77  9600bpsなら0x01の77
 
-	for( bit_count = 0; bit_count < 0x800000; bit_count++ ){	//１ビット待つため
+	for( bit_count = 0; bit_count < 0x80000; bit_count++ ){	//１ビット待つため
 	}
 	SCI0.SCR.BYTE		= 0x70;		//送受信動作を許可
 	
@@ -267,7 +267,7 @@ void init_Sci_1(void)	//SCI1版
 	
 	SCI1.SCR.BIT.CKE	= 0;												//内臓ポーレートジェネレータ SCKn端子は入出力ポートとして使用可能 p815 
 	
-	SCI1.SMR.BIT.CKS 		= 0;											//PCLKクロック n=0
+	SCI1.SMR.BIT.CKS 	= 0;											//PCLKクロック n=0
 	SCI1.SMR.BIT.CHR 	= 0;											//p830
 	SCI1.SMR.BIT.PE		= 0;											//p830
 	SCI1.SMR.BIT.MP		= 0;											//p830	
@@ -275,7 +275,7 @@ void init_Sci_1(void)	//SCI1版
 	
 	SCI1.BRR = 48000000 / ( 64 * 0.5 * BITRATE_1 ) - 1;
 	
-	for( bit_count = 0; bit_count < 0x800000; bit_count++ ){	//１ビット待つため
+	for( bit_count = 0; bit_count < 0x80000; bit_count++ ){	//１ビット待つため
 	}
 	
 	SCI1.SCR.BIT.TE = 1;													//シリアル送信動作を許可
@@ -284,46 +284,150 @@ void init_Sci_1(void)	//SCI1版
 
 void init_Sci_2(void)//追加
 {
-	int i= 0;	
+	int bit_count = 0;
 	
-	SYSTEM.MSTPCRB.BIT.MSTPB29 = 0;	//SCI1モジュールSTOP状態を解除
-										//河原 0x01→0x00 で通信速度を最大に．分周1
+	SYSTEM.MSTPCRB.BIT.MSTPB29 = 0;						//SCI2モジュールSTOP状態を解除
+															//河原 0x01→0x00 で通信速度を最大に．分周1
 	PORT1.DDR.BIT.B2	= 0;		//
 	PORT1.ICR.BIT.B2	= 1;		//
 	PORT1.DDR.BIT.B3 	= 0;	//追加
-	PORT1.ICR.BIT.B3 	= 1;	//追加
+	PORT1.ICR.BIT.B3 	= 1;	//追加	
+	
+	SCI2.SCR.BIT.TIE 	= 0;												//TXI割り込み要求を許可
+	SCI2.SCR.BIT.RIE 	= 0;												//RXIおよびERI割り込み要求を許可
+	SCI2.SCR.BIT.TE 	= 0;												//シリアル送信動作を禁止
+	SCI2.SCR.BIT.RE 	= 0;												//シリアル受信動作を禁止
+	SCI2.SCR.BIT.TEIE = 0;												//TEI割り込み要求を禁止
+	
+	SCI2.SCR.BIT.CKE	= 0;										//シリアルコントロールレジスタ
 
 	
-	SCI2.SCR.BIT.TEIE = 0; //TEIE割込み要求を禁止 P815
-	SCI2.SCR.BIT.MPIE = 0; //通常の受信動作 P815
-	SCI2.SCR.BIT.RIE = 1; //RXIおよびERI割込み要求を許可 P815
-	SCI2.SCR.BIT.TIE = 1; //TXI割込み要求を許可 P815
-	SCI2.SCR.BIT.RE = 0; //シリアル受信動作を禁止 P815
-	SCI2.SCR.BIT.TE = 0; //シリアル送信動作を禁止 P815
+	SCI2.SMR.BIT.CKS 	= 0;											//PCLKクロック n=0
+	SCI2.SMR.BIT.CHR 	= 0;											//p830
+	SCI2.SMR.BIT.PE		= 0;											//p830
+	SCI2.SMR.BIT.MP		= 0;											//p830	
+	SCI2.SMR.BIT.STOP	= 0;											//p830
+
+	SCI2.BRR = 48000000 / ( 64 * 0.5 * BITRATE_2 ) - 1;
+
+	for( bit_count = 0; bit_count < 0x80000; bit_count++ ){	//１ビット待つため
+	}
+	SCI2.SCR.BIT.TE = 1;													//シリアル送信動作を許可
+	SCI2.SCR.BIT.RE = 1;
 	
-	SCI2.SCR.BIT.CKE = 0; //内臓ポーレートジェネレータ。P815
-	
-	SCI2.SMR.BIT.CM = 0; //調歩同期式モード P813
-	SCI2.SMR.BIT.CHR = 0; //データ長8ビットで送受信 P813
-	SCI2.SMR.BIT.PE = 0; //パリティビットなし P813
-	SCI2.SMR.BIT.PM = 0; //偶数パリティで送受信 P813
-	SCI2.SMR.BIT.STOP = 0; //1ストップビット
-	SCI2.SMR.BIT.MP = 0; //ﾏﾙﾁﾌﾟﾛｾｯｻ通信機能を禁止
-	SCI2.SMR.BIT.CKS = 0; //PCLKクロック(n=0)
-	
-	SCI2.BRR = PCLK * 1000000 / ( 64 * 0.5 * BITRATE_2 ) - 1; //BRRレジスタの設定値 P822
-	
-	for(i=0;i > 80000;i++);
-	
-	SCI2.SCR.BIT.RE = 1; //シリアル受信動作を許可 P815
-	SCI2.SCR.BIT.TE = 1; //シリアル送信動作を許可 P815
 	IEN(SCI2,RXI2) = 1;
-	IPR(SCI2,RXI2) = 11;
+	IPR(SCI2,RXI2) = 13;
+}
+
+
+/******************************************************************************
+*	タイトル ：D　U　A　L　S　H　O　C　K
+*	  関数名 ： init_Rspi_dualshock
+*	  戻り値 ： void型 
+*	   引数1 ： char型 s[]  
+******************************************************************************/
+void init_Rspi_dualshock(void)	//(デュアルショック用)
+{
+	MSTP(RSPI1)			= 0;	//RSPI1モジュールストップの解除
+	
+	RSPI1.SPCR.BYTE		= 0x00;	//始めにRSPI通信を使用するために0x00で通信を有効に
+	
+	RSPI1.SPPCR.BIT.SPLP	= 0;	//RSPIループバックビルド=通常モード
+	RSPI1.SPPCR.BIT.SPLP2	= 0;	//RSPI2スープバックビルド=通常モード
+	RSPI1.SPPCR.BIT.SPOM	= 0;	//RSPI出力端子モードビット=CMOS出力
+	RSPI1.SPPCR.BIT.MOIFV	= 1;	//MOSIアイドル固定値ビット1
+	RSPI1.SPPCR.BIT.MOIFE	= 1;	//MOSI出力値はMOIFVビットの設定値
+	
+	RSPI1.SPBR			= 75;	//RSPIビットレートレジスタ=255最低速度
+
+	RSPI1.SPDCR.BIT.SPFC	= 0x00;	//SPDRレジスタに格納できるフレーム数を１にする
+	RSPI1.SPDCR.BIT.SLSEL	= 0x00;	//SSL端子出力設定余ったポートをIOポートにする=すべて出力用
+	RSPI1.SPDCR.BIT.SPRDTD	= 0;	//RSPI受信/送信データ選択ビット=SPDRは受信バッファを読みだす
+	RSPI1.SPDCR.BIT.SPLW	= 1;	//SPDRレジスタへはロングワードアクセス。
+
+	RSPI1.SPSCR.BIT.SPSLN	= 0x02;	//RSPIシーケンス長設定ビット=シーケンス長3
+	
+	RSPI1.SPCKD.BIT.SCKDL	= 0x00;	//RSPCK遅延設定ビット=1RSPCK 
+	
+	RSPI1.SSLND.BIT.SLNDL	= 0x00;	//SSLネゲート遅延設定ビット=1RSPCK
+	
+	RSPI1.SPND.BIT.SPNDL	= 0x00;	//RSPI次アクセス遅延設定ビット=1RSPCK+2PCLK
+	
+	RSPI1.SPCR2.BIT.SPPE	= 0;	//パリティ有効ビット、送信データのパリティビットを付加しない
+	RSPI1.SPCR2.BIT.SPOE	= 0;	//パリティモードビット=偶数パリティイで送受信
+	RSPI1.SPCR2.BIT.SPIIE	= 1;	//アイドル割り込み要求の発生を許可
+	RSPI1.SPCR2.BIT.PTE		= 0;	//パリティ回路自己診断機能は無効
+	
+	RSPI1.SPCMD0.BIT.CPHA	= 1;	//奇数エッジでデータ変化、偶数エッジでデータサンプル
+	RSPI1.SPCMD0.BIT.CPOL	= 1;	//アイドル時のRSPCKが'1'
+	RSPI1.SPCMD0.BIT.BRDV	= 0x03;	//ベースのビットレートを8分周を選択
+	RSPI1.SPCMD0.BIT.SSLA	= 0x00;	//SSL信号アサート設定ビット=SSLO
+	RSPI1.SPCMD0.BIT.SSLKP	= 1;	//転送終了後から次アクセス開始までSSL信号レベルを保持
+
+	RSPI1.SPCMD0.BIT.SPB		= 0x03;	//RSPIデータ長設定ビット=32ビット
+	RSPI1.SPCMD0.BIT.LSBF		= 1;		//RSPILSBファーストビット=LSBファーストビット
+	RSPI1.SPCMD0.BIT.SPNDEN	= 1;		//次アクセス遅延はRSPI次アクセス遅延レジスタ(SPND)の設定値
+	RSPI1.SPCMD0.BIT.SLNDEN	= 1;		//次アクセス遅延設定許可ビット=SSLネゲート遅延はRSPIスレーブセレクトネゲート遅延レジスタ(SSLND)の設定値
+	RSPI1.SPCMD0.BIT.SCKDEN	= 1;		//RSPCK遅延はRSPCK遅延はRSPIクロック遅延レジスタ(SPCKD)の設定値
+	
+	RSPI1.SPCMD1.WORD = RSPI1.SPCMD0.WORD;	//4バイト毎の送信時に行う設定をコピーさせる
+	RSPI1.SPCMD2.WORD = RSPI1.SPCMD0.WORD;	//1バイト毎の送信時に行う設定をコピーさせる
+	RSPI1.SPCMD2.BIT.SPB	= 0x07;			//RSPIデータ長設定ビット=8ビット
+
+	RSPI1.SPCMD2.BIT.SSLKP	= 0;			//送信が終わった際に出力をHighにするため
+
+	//割り込みコントローラの設定
+	//DMACAの設定
+	//入出力ポートの設定	(今回はシングルマスタ設定のため入出力が自動で決定される)
+	PORTE.ICR.BIT.B7 = 1;
+	
+	IOPORT.PFHSPI.BIT.RSPIS = 1;
+
+	IOPORT.PFHSPI.BIT.RSPCKE	= 1;	//RSPCKB端子有効
+	IOPORT.PFHSPI.BIT.MOSIE		= 1;	//MOSIB端子有効
+	IOPORT.PFHSPI.BIT.MISOE		= 1;	//MISOB端子有効
+	IOPORT.PFHSPI.BIT.SSL0E		= 1;	//SSLB0端子有効
+	IOPORT.PFHSPI.BIT.SSL1E		= 1;	//SSLB1端子有効
+	IOPORT.PFHSPI.BIT.SSL2E		= 1;	//SSLB2端子有効
+	IOPORT.PFHSPI.BIT.SSL3E		= 1;	//SSLB3端子有効
+	
+	RSPI1.SPCR.BIT.SPMS		= 0;	//RSPIモード選択ビット=SPI動作(4線式)
+	RSPI1.SPCR.BIT.TXMD 	= 0;	//通信動作モード選択ビット=全二重同期式シリアル通信
+	RSPI1.SPCR.BIT.MODFEN	= 0;	//モードフォルトエラー検出を禁止
+	RSPI1.SPCR.BIT.MSTR		= 1;	//RSPIマスタ/スレーブモード選択=マスタモード
+	RSPI1.SPCR.BIT.SPEIE	= 0;	//RSPIエラー割り込み要求の発生を禁止
+	RSPI1.SPCR.BIT.SPTIE	= 0;	//RSPI送信割り込み要求の発生を禁止
+	RSPI1.SPCR.BIT.SPE		= 1;	//RSPI機能を有効に
+	RSPI1.SPCR.BIT.SPRIE	= 1;	//RSPI受信割り込み要求の発生を許可
+	
+	RSPI1.SSLP.BIT.SSLP0	= 0;	//SSL0信号は0アクティブ
+	RSPI1.SSLP.BIT.SSLP1	= 0;	//SSL1信号は0アクティブ
+	RSPI1.SSLP.BIT.SSLP2	= 0;	//SSL2信号は0アクティブ
+	RSPI1.SSLP.BIT.SSLP3	= 0;	//SSL3信号は0アクティブ
+	
+	//以下不要の場合は削除の事
+	RSPI1.SPSR.BIT.OVRF		= 0;	//オーバランエラーなし
+	RSPI1.SPSR.BIT.IDLNF	= 0;	//RSPIがアイドル状態(後で送るときだけ1を代入するのだろうか)<武山のでは使用されていなかった>？
+	RSPI1.SPSR.BIT.MODF	= 0;	//モードフォルトエラーなし
+	RSPI1.SPSR.BIT.PERF		= 0;	//パリティエラーなし
+
+	//以上不要の場合は削除の事
+	RSPI1.SPCR.BYTE;	//SPCRのリード
+	IEN(RSPI1,SPRI1) = 1;
+	IPR(RSPI1,SPRI1) = 12;
 }
 
 void init_dafalut()
 {
+	PORT8.DDR.BIT.B0 = 1;
 	PORT8.DDR.BIT.B1 = 1;
 	PORTD.DDR.BIT.B7 = 1;
 	PORT6.DDR.BIT.B0 = 1;
+	
+	PORT1.DDR.BIT.B4 = ON;			//電磁弁
+	PORT2.DDR.BIT.B5 = ON;			//
+	PORT3.DDR.BIT.B3 = ON;			//
+	PORT3.DDR.BIT.B2 = ON;			//電磁弁
+	PORT5.DDR.BIT.B6 = ON;			//電磁弁
+	PORT6.DDR.BIT.B0 = ON;			//電磁弁
 }
