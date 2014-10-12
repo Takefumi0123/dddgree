@@ -4,5 +4,4 @@
 #include "iodefine.h"
 
 void transimission_string( char *s );
-
 #endif

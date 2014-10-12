@@ -58,6 +58,7 @@ void Excep_ICU_SWINT(void){ }
 // CMT0 CMI0
 void Excep_CMT0_CMI0(void){ 
 	wait_interrupt();
+	wait_timer_count();
 }
 
 // CMT1 CMI1

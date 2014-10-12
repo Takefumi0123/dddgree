@@ -60,50 +60,91 @@ void init_pwm(void)
 	PORT7.DDR.BIT.B5 = ON;			//MOTOR_OUTPUT
 	PORT7.DDR.BIT.B6 = ON;			//MOTOR_OUTPUT
 	PORT7.DDR.BIT.B7 = ON;			//MOTOR_OUTPUT
+	PORT9.DDR.BIT.B0 = ON;			//MOTOR_OUTPUT
+	PORT9.DDR.BIT.B1 = ON;			//MOTOR_OUTPUT
+	PORT9.DDR.BIT.B2 = ON;			//MOTOR_OUTPUT
+	PORT9.DDR.BIT.B3 = ON;			//MOTOR_OUTPUT
+	PORTB.DDR.BIT.B2 = ON;			//MOTOR_OUTPUT
+	PORTB.DDR.BIT.B3 = ON;			//MOTOR_OUTPUT
+	PORTB.DDR.BIT.B6 = ON;			//MOTOR_OUTPUT
+	PORTB.DDR.BIT.B7 = ON;			//MOTOR_OUTPUT
+	PORTB.DDR.BIT.B0 = ON;			//MOTOR_PWM
+	PORTB.DDR.BIT.B1 = ON;			//MOTOR_PWM
+	PORTB.DDR.BIT.B4 = ON;			//MOTOR_PWM
+	PORTB.DDR.BIT.B5 = ON;			//MOTOR_PWM
 	PORTA.DDR.BIT.B0 = ON;			//MOTOR_PWM
 	PORTA.DDR.BIT.B2 = ON;			//MOTOR_PWM
 	PORT8.DDR.BIT.B2 = ON;			//MOTOR_PWM
 	PORT8.DDR.BIT.B3 = ON;			//MOTOR_PWM
-	
-	
-	MTUA.TSTR.BIT.CST4 = 0;			//カウント停止 
+
+
+	MTUA.TSTR.BIT.CST4 = 0;			//カウント停止
+	MTUB.TSTR.BIT.CST4 = 0;			//カウント停止
+	MTUA.TSTR.BIT.CST3 = 0;			//柳田追加12/22
 	MTUB.TSTR.BIT.CST0 = 0; 		//柳田追加12/22
+	MTUB.TSTR.BIT.CST3 = 0; 		//柳田追加12/22
 	IOPORT.PFCMTU.BIT.MTUS4 = 1;		//ポートファンクションレジスタMTIOC4A-B,MTIOC4C-B端子を選択　追加
 	SYSTEM.MSTPCRA.BIT.MSTPA8 = 0;		//MTUユニット1（MTU6～MTU11）のモジュールストップ解除
 	SYSTEM.MSTPCRA.BIT.MSTPA9 = 0;		//MTUユニット0（MTU0～MTU5）のモジュールストップ解除 追加柳田12/22
+	MTU10.TCNT = 0;				//TCNTを初期化する
 	MTU4.TCNT = 0;				//追加柳田12/22　
 	MTU6.TCNT = 0;				//追加柳田12/22
+	MTU9.TCNT = 0;				//追加柳田12/22
+	MTU10.TCR.BIT.CCLR = 0x01;		//同期クリア/同期動作をしている他のチャネルのカウンタクリアでTCNT をクリア
 	MTU4.TCR.BIT.CCLR = 0x01;		//追加柳田12/22
 	MTU6.TCR.BIT.CCLR = 0x01;		//追加柳田12/22
+	MTU9.TCR.BIT.CCLR = 0x01;		//追加柳田12/22
+	MTU10.TCR.BIT.CKEG = 0x00;		//立ち上がりエッジでカウント
 	MTU4.TCR.BIT.CKEG = 0x00;		//追加柳田12/22
 	MTU6.TCR.BIT.CKEG = 0x00;		//追加柳田12/22
+	MTU9.TCR.BIT.CKEG = 0x00;		//追加柳田12/22
+	MTU10.TCR.BIT.TPSC = 0x03;//0x03;		//内部クロック設定：ICLK/4
 	MTU4.TCR.BIT.TPSC = 0x00;//0x03;		//追加柳田12/22
 	MTU6.TCR.BIT.TPSC = 0x00;//0x03;		//追加柳田12/22
+	MTU9.TCR.BIT.TPSC = 0x00;//0x03;		//追加柳田12/22
 
+	MTU10.TMDR.BIT.MD = 0x02;		//PWMモード1
 	MTU4.TMDR.BIT.MD = 0x02;		//追加柳田12/22
 	MTU6.TMDR.BIT.MD = 0x02;		//追加柳田12/22
-//	MTUB.TOER.BIT.OE0B = 1;			//PWM出力許可 MTIOC10A
-//	MTUB.TOER.BIT.OE0D = 1;			//PWM出力許可 MTIOC10C
+	MTU9.TMDR.BIT.MD = 0x02;		//追加柳田12/22
+	
+	MTUB.TOER.BIT.OE4A = 1;			//PWM出力許可 MTIOC10A
+	MTUB.TOER.BIT.OE4C = 1;			//PWM出力許可 MTIOC10C
 	MTUA.TOER.BIT.OE4A = 1;
 	MTUA.TOER.BIT.OE4C = 1;
 	
+	MTU10.TIORH.BIT.IOA = 2;		//アウトプットコンペアレジスタに設定、初期値、出力値の選択A		←わからない←最適値が←柳田修正12/22 =6; → =1;
+	MTU10.TIORH.BIT.IOB = 1;		//アウトプットコンペアレジスタに設定、初期値、出力値の選択B		柳田修正12/22 =5; → =1;
 	MTU4.TIORH.BIT.IOA = 2;			//追加柳田12/22
 	MTU4.TIORH.BIT.IOB = 1;			//追加柳田12/22
 	MTU6.TIORH.BIT.IOA = 2;			//追加柳田12/22
 	MTU6.TIORH.BIT.IOB = 1;			//追加柳田12/22
-
+	MTU9.TIORH.BIT.IOA = 2;			//追加柳田12/22
+	MTU9.TIORH.BIT.IOB = 1;			//追加柳田12/22
+	
+	MTU10.TIORL.BIT.IOC = 2;		//アウトプットコンペアレジスタに設定、初期値、出力値の選択C		柳田修正12/22 =6; → =2;
+	MTU10.TIORL.BIT.IOD = 1;		//アウトプットコンペアレジスタに設定、初期値、出力値の選択D		柳田修正12/22 =5; → =1;
 	MTU4.TIORL.BIT.IOC = 2;			//追加柳田12/22
 	MTU4.TIORL.BIT.IOD = 1;			//追加柳田12/22
 	MTU6.TIORL.BIT.IOC = 2;			//追加柳田12/22
 	MTU6.TIORL.BIT.IOD = 1;			//追加柳田12/22
-
+	MTU9.TIORL.BIT.IOC = 2;			//追加柳田12/22
+	MTU9.TIORL.BIT.IOD = 1;			//追加柳田12/22
+	
+	MTU10.TGRA = PWM_PERIOD_FUN;		//48000 / 4 / 8 * 0.01(周辺クロック/内部クロック/タイマプリスケーラ*周期)[1kHz]
+	MTU10.TGRC = PWM_PERIOD_FUN;		//48000 / 4 / 8 * 0.01(周辺クロック/内部クロック/タイマプリスケーラ*周期)[1kHz]
 	MTU4.TGRA = PWM_PERIOD;		//追加柳田12/22
 	MTU4.TGRC = PWM_PERIOD;		//追加柳田12/22
 	MTU6.TGRA = PWM_PERIOD;//_OTHER;		//追加柳田12/22
 	MTU6.TGRC = PWM_PERIOD;//_OTHER;		//追加柳田12/22
-	
+	MTU9.TGRA = PWM_PERIOD;		//追加柳田12/22
+	MTU9.TGRC = PWM_PERIOD;		//追加柳田12/22
+
+	MTUA.TSTR.BIT.CST3 = 1;			//柳田追加12/22	//2013.02.18	CST3→CST4	MTU4のため3だと動かなかった
 	MTUA.TSTR.BIT.CST4 = 1;			//柳田追加12/22	//2013.02.18	CST3→CST4	MTU4のため3だと動かなかった
+	MTUB.TSTR.BIT.CST4 = 1;			//カウント停止
 	MTUB.TSTR.BIT.CST0 = 1; 		//柳田追加12/22
+	MTUB.TSTR.BIT.CST3 = 1; 		//柳田追加12/22
 }
 
 /******************************************************************************

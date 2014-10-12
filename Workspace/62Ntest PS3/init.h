@@ -8,6 +8,7 @@
 #define BITRATE_1			115200
 #define BITRATE_2			115200
 #define PWM_PERIOD			(48000000/1) / 100000
+#define PWM_PERIOD_FUN			(48000000/ 64) / 60.5
 
 #include"iodefine.h"
 #include <stdio.h>

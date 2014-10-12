@@ -22,3 +22,4 @@ void transmission_string(char *s)
 		}
 	}
 }
+
