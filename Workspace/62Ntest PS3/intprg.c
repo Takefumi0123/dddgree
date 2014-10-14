@@ -252,6 +252,7 @@ void Excep_MTU2_TGIB2(void){ }
 // MTU2 TCIV2
 void Excep_MTU2_TCIV2(void){
 	over_flow_MTU2();
+//	PORT8.DR.BIT.B1 = 1;
 }
 
 // MTU2 TCIU2

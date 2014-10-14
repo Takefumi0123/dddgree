@@ -98,7 +98,7 @@ void init_pwm(void)
 	MTU4.TCR.BIT.CKEG = 0x00;		//追加柳田12/22
 	MTU6.TCR.BIT.CKEG = 0x00;		//追加柳田12/22
 	MTU9.TCR.BIT.CKEG = 0x00;		//追加柳田12/22
-	MTU10.TCR.BIT.TPSC = 0x03;//0x03;		//内部クロック設定：ICLK/4
+	MTU10.TCR.BIT.TPSC = 0x00;//0x03;		//内部クロック設定：ICLK/64
 	MTU4.TCR.BIT.TPSC = 0x00;//0x03;		//追加柳田12/22
 	MTU6.TCR.BIT.TPSC = 0x00;//0x03;		//追加柳田12/22
 	MTU9.TCR.BIT.TPSC = 0x00;//0x03;		//追加柳田12/22
@@ -131,8 +131,8 @@ void init_pwm(void)
 	MTU9.TIORL.BIT.IOC = 2;			//追加柳田12/22
 	MTU9.TIORL.BIT.IOD = 1;			//追加柳田12/22
 	
-	MTU10.TGRA = PWM_PERIOD_FUN;		//48000 / 4 / 8 * 0.01(周辺クロック/内部クロック/タイマプリスケーラ*周期)[1kHz]
-	MTU10.TGRC = PWM_PERIOD_FUN;		//48000 / 4 / 8 * 0.01(周辺クロック/内部クロック/タイマプリスケーラ*周期)[1kHz]
+	MTU10.TGRA = PWM_PERIOD;		//48000 / 4 / 8 * 0.01(周辺クロック/内部クロック/タイマプリスケーラ*周期)[1kHz]
+	MTU10.TGRC = PWM_PERIOD;		//48000 / 4 / 8 * 0.01(周辺クロック/内部クロック/タイマプリスケーラ*周期)[1kHz]
 	MTU4.TGRA = PWM_PERIOD;		//追加柳田12/22
 	MTU4.TGRC = PWM_PERIOD;		//追加柳田12/22
 	MTU6.TGRA = PWM_PERIOD;//_OTHER;		//追加柳田12/22
@@ -284,39 +284,41 @@ void init_Sci_1(void)	//SCI1版
 
 void init_Sci_2(void)//追加
 {
-	int bit_count = 0;
+	int i= 0;	
 	
-	SYSTEM.MSTPCRB.BIT.MSTPB29 = 0;						//SCI2モジュールSTOP状態を解除
-															//河原 0x01→0x00 で通信速度を最大に．分周1
+	SYSTEM.MSTPCRB.BIT.MSTPB29 = 0;	//SCI1モジュールSTOP状態を解除
+										//河原 0x01→0x00 で通信速度を最大に．分周1
 	PORT1.DDR.BIT.B2	= 0;		//
 	PORT1.ICR.BIT.B2	= 1;		//
 	PORT1.DDR.BIT.B3 	= 0;	//追加
-	PORT1.ICR.BIT.B3 	= 1;	//追加	
-	
-	SCI2.SCR.BIT.TIE 	= 0;												//TXI割り込み要求を許可
-	SCI2.SCR.BIT.RIE 	= 0;												//RXIおよびERI割り込み要求を許可
-	SCI2.SCR.BIT.TE 	= 0;												//シリアル送信動作を禁止
-	SCI2.SCR.BIT.RE 	= 0;												//シリアル受信動作を禁止
-	SCI2.SCR.BIT.TEIE = 0;												//TEI割り込み要求を禁止
-	
-	SCI2.SCR.BIT.CKE	= 0;										//シリアルコントロールレジスタ
+	PORT1.ICR.BIT.B3 	= 1;	//追加
 
 	
-	SCI2.SMR.BIT.CKS 	= 0;											//PCLKクロック n=0
-	SCI2.SMR.BIT.CHR 	= 0;											//p830
-	SCI2.SMR.BIT.PE		= 0;											//p830
-	SCI2.SMR.BIT.MP		= 0;											//p830	
-	SCI2.SMR.BIT.STOP	= 0;											//p830
-
-	SCI2.BRR = 48000000 / ( 64 * 0.5 * BITRATE_2 ) - 1;
-
-	for( bit_count = 0; bit_count < 0x80000; bit_count++ ){	//１ビット待つため
-	}
-	SCI2.SCR.BIT.TE = 1;													//シリアル送信動作を許可
-	SCI2.SCR.BIT.RE = 1;
+	SCI2.SCR.BIT.TEIE = 0; //TEIE割込み要求を禁止 P815
+	SCI2.SCR.BIT.MPIE = 0; //通常の受信動作 P815
+	SCI2.SCR.BIT.RIE = 1; //RXIおよびERI割込み要求を許可 P815
+	SCI2.SCR.BIT.TIE = 1; //TXI割込み要求を許可 P815
+	SCI2.SCR.BIT.RE = 0; //シリアル受信動作を禁止 P815
+	SCI2.SCR.BIT.TE = 0; //シリアル送信動作を禁止 P815
 	
+	SCI2.SCR.BIT.CKE = 0; //内臓ポーレートジェネレータ。P815
+	
+	SCI2.SMR.BIT.CM = 0; //調歩同期式モード P813
+	SCI2.SMR.BIT.CHR = 0; //データ長8ビットで送受信 P813
+	SCI2.SMR.BIT.PE = 0; //パリティビットなし P813
+	SCI2.SMR.BIT.PM = 0; //偶数パリティで送受信 P813
+	SCI2.SMR.BIT.STOP = 0; //1ストップビット
+	SCI2.SMR.BIT.MP = 0; //ﾏﾙﾁﾌﾟﾛｾｯｻ通信機能を禁止
+	SCI2.SMR.BIT.CKS = 0; //PCLKクロック(n=0)
+	
+	SCI2.BRR = PCLK * 1000000 / ( 64 * 0.5 * BITRATE_2 ) - 1; //BRRレジスタの設定値 P822
+	
+	for(i=0;i > 80000;i++);
+	
+	SCI2.SCR.BIT.RE = 1; //シリアル受信動作を許可 P815
+	SCI2.SCR.BIT.TE = 1; //シリアル送信動作を許可 P815
 	IEN(SCI2,RXI2) = 1;
-	IPR(SCI2,RXI2) = 13;
+	IPR(SCI2,RXI2) = 11;
 }
 
 
