@@ -276,6 +276,23 @@ void  Init_GPIOs (void)
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
 	GPIO_Init(GPIOD, &GPIO_InitStructure);
 	//------------------------------------------------------------------------------------------
+	//PORTDにクロックの供給を開始
+	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA, ENABLE);
+	//初期化用構造体にパラメータをセットしていくため、いったん初期値に戻す
+	GPIO_StructInit(&GPIO_InitStructure);
+
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6 | GPIO_Pin_7;
+	//指定したピンを出力に指定する
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
+	//出力ポートのタイプをプッシュプルに指定する
+	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+	GPIO_Init(GPIOA, &GPIO_InitStructure);
+
+  GPIO_PinAFConfig(GPIOD,GPIO_PinSource12,GPIO_AF_TIM4);
+  GPIO_PinAFConfig(GPIOD,GPIO_PinSource13,GPIO_AF_TIM4);
+  GPIO_PinAFConfig(GPIOD,GPIO_PinSource14,GPIO_AF_TIM4);
+  GPIO_PinAFConfig(GPIOD,GPIO_PinSource15,GPIO_AF_TIM4);
+  GPIO_PinAFConfig(GPIOA,GPIO_PinSource6,GPIO_AF_TIM3);
 }
 
 // Configures the different system clocks.
