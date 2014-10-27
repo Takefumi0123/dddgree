@@ -63,6 +63,7 @@ void  Init_GPIOs (void)
 	//PORTA設定入力終了。これでGPIOAを設定する
 	GPIO_Init(GPIOA, &GPIO_InitStructure);
 
+
 	//-----------------------------------------------------------------------------------
 	// GPIO PORT B
 	//-----------------------------------------------------------------------------------
@@ -121,13 +122,18 @@ void  Init_GPIOs (void)
 	// PC14 : OSC32_IN
 	// PC15 : OSC32_OUT
 	//-----------------------------------------------------------------------------------
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0 | GPIO_Pin_1 | GPIO_Pin_2 | GPIO_Pin_3
-								| GPIO_Pin_4 | GPIO_Pin_5 | GPIO_Pin_6 | GPIO_Pin_7
-								| GPIO_Pin_8 | GPIO_Pin_9 | GPIO_Pin_10 | GPIO_Pin_11
-								| GPIO_Pin_12 | GPIO_Pin_13;
+	//PORTDにクロックの供給を開始
+	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA, ENABLE);
+	//初期化用構造体にパラメータをセットしていくため、いったん初期値に戻す
+	GPIO_StructInit(&GPIO_InitStructure);
 
-	GPIO_Init(GPIOC, &GPIO_InitStructure);
-
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6 | GPIO_Pin_7;
+	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
+	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP ;
+	//PORTA設定入力終了。これでGPIOAを設定する
+	GPIO_Init(GPIOA, &GPIO_InitStructure);
 	//-----------------------------------------------------------------------------------
 	// GPIO PORT D
 	//-----------------------------------------------------------------------------------
@@ -158,8 +164,7 @@ void  Init_GPIOs (void)
 	//設定するピンを指定する（４つのLED）
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0 | GPIO_Pin_1 | GPIO_Pin_2 | GPIO_Pin_3
 								| GPIO_Pin_4 | GPIO_Pin_5 | GPIO_Pin_6 | GPIO_Pin_7
-								| GPIO_Pin_8 | GPIO_Pin_9 | GPIO_Pin_10 | GPIO_Pin_11
-								| GPIO_Pin_12 | GPIO_Pin_13 | GPIO_Pin_14 | GPIO_Pin_15;
+								| GPIO_Pin_8 | GPIO_Pin_9 | GPIO_Pin_10 | GPIO_Pin_11;
 	//指定したピンを出力に指定する
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
 	//出力ポートのタイプをプッシュプルに指定する
@@ -168,6 +173,15 @@ void  Init_GPIOs (void)
 	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
 	//GPIOのスピードを100MHz（最高速）にセットする
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
+
+	//PORTD設定入力終了。これでGPIODを設定する
+	GPIO_Init(GPIOD, &GPIO_InitStructure);
+
+//LEDの設定
+	//設定するピンを指定する（４つのLED）
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_12 | GPIO_Pin_13 | GPIO_Pin_14 | GPIO_Pin_15;
+	//指定したピンを出力に指定する
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
 
 	//PORTD設定入力終了。これでGPIODを設定する
 	GPIO_Init(GPIOD, &GPIO_InitStructure);
