@@ -2,10 +2,14 @@ Archive member included to satisfy reference by file (symbol)
 
 c:/users/äxéj/mentorgraphics/sourcery_codebench_lite_for_arm_eabi/bin/../lib/gcc/arm-none-eabi/4.8.3/thumb2\libgcc.a(_arm_addsubdf3.o)
                               ..\obj\main.o (__aeabi_dadd)
+c:/users/äxéj/mentorgraphics/sourcery_codebench_lite_for_arm_eabi/bin/../lib/gcc/arm-none-eabi/4.8.3/thumb2\libgcc.a(_arm_muldivdf3.o)
+                              ..\obj\main.o (__aeabi_dmul)
+c:/users/äxéj/mentorgraphics/sourcery_codebench_lite_for_arm_eabi/bin/../lib/gcc/arm-none-eabi/4.8.3/thumb2\libgcc.a(_arm_fixunsdfsi.o)
+                              ..\obj\main.o (__aeabi_d2uiz)
 c:/users/äxéj/mentorgraphics/sourcery_codebench_lite_for_arm_eabi/bin/../lib/gcc/arm-none-eabi/4.8.3/thumb2\libgcc.a(_arm_truncdfsf2.o)
                               ..\obj\main.o (__aeabi_d2f)
 c:/users/äxéj/mentorgraphics/sourcery_codebench_lite_for_arm_eabi/bin/../lib/gcc/arm-none-eabi/4.8.3/thumb2\libgcc.a(_arm_addsubsf3.o)
-                              ..\obj\main.o (__aeabi_fsub)
+                              ..\obj\main.o (__aeabi_ui2f)
 c:/users/äxéj/mentorgraphics/sourcery_codebench_lite_for_arm_eabi/bin/../lib/gcc/arm-none-eabi/4.8.3/thumb2\libgcc.a(_arm_muldivsf3.o)
                               ..\obj\main.o (__aeabi_fmul)
 c:/users/äxéj/mentorgraphics/sourcery_codebench_lite_for_arm_eabi/bin/../lib/gcc/arm-none-eabi/4.8.3/thumb2\libgcc.a(_arm_cmpsf2.o)
@@ -185,6 +189,8 @@ Discarded input sections
  .debug_frame   0x00000000       0xac ..\obj\stm32f4xx_crc.o
  .text          0x00000000        0x0 ..\obj\main.o
  .data          0x00000000        0x0 ..\obj\main.o
+ .text.Limit_ul
+                0x00000000       0x3c ..\obj\main.o
  .text          0x00000000        0x0 ..\obj\stm32f4xx_rcc.o
  .data          0x00000000       0x10 ..\obj\stm32f4xx_rcc.o
  .bss           0x00000000        0x0 ..\obj\stm32f4xx_rcc.o
@@ -734,6 +740,8 @@ Discarded input sections
                 0x00000000       0x40 ..\obj\stm32f4xx_tim.o
  .text.TIM_UpdateRequestConfig
                 0x00000000       0x40 ..\obj\stm32f4xx_tim.o
+ .text.TIM_ARRPreloadConfig
+                0x00000000       0x40 ..\obj\stm32f4xx_tim.o
  .text.TIM_SelectOnePulseMode
                 0x00000000       0x38 ..\obj\stm32f4xx_tim.o
  .text.TIM_SetClockDivision
@@ -742,8 +750,6 @@ Discarded input sections
                 0x00000000       0x44 ..\obj\stm32f4xx_tim.o
  .text.TIM_SelectOCxM
                 0x00000000       0xac ..\obj\stm32f4xx_tim.o
- .text.TIM_SetCompare1
-                0x00000000       0x1c ..\obj\stm32f4xx_tim.o
  .text.TIM_SetCompare2
                 0x00000000       0x1c ..\obj\stm32f4xx_tim.o
  .text.TIM_SetCompare3
@@ -878,6 +884,10 @@ Discarded input sections
                 0x00000000       0x90 ..\obj\stm32f4xx_tim.o
  .data          0x00000000        0x0 c:/users/äxéj/mentorgraphics/sourcery_codebench_lite_for_arm_eabi/bin/../lib/gcc/arm-none-eabi/4.8.3/thumb2\libgcc.a(_arm_addsubdf3.o)
  .bss           0x00000000        0x0 c:/users/äxéj/mentorgraphics/sourcery_codebench_lite_for_arm_eabi/bin/../lib/gcc/arm-none-eabi/4.8.3/thumb2\libgcc.a(_arm_addsubdf3.o)
+ .data          0x00000000        0x0 c:/users/äxéj/mentorgraphics/sourcery_codebench_lite_for_arm_eabi/bin/../lib/gcc/arm-none-eabi/4.8.3/thumb2\libgcc.a(_arm_muldivdf3.o)
+ .bss           0x00000000        0x0 c:/users/äxéj/mentorgraphics/sourcery_codebench_lite_for_arm_eabi/bin/../lib/gcc/arm-none-eabi/4.8.3/thumb2\libgcc.a(_arm_muldivdf3.o)
+ .data          0x00000000        0x0 c:/users/äxéj/mentorgraphics/sourcery_codebench_lite_for_arm_eabi/bin/../lib/gcc/arm-none-eabi/4.8.3/thumb2\libgcc.a(_arm_fixunsdfsi.o)
+ .bss           0x00000000        0x0 c:/users/äxéj/mentorgraphics/sourcery_codebench_lite_for_arm_eabi/bin/../lib/gcc/arm-none-eabi/4.8.3/thumb2\libgcc.a(_arm_fixunsdfsi.o)
  .data          0x00000000        0x0 c:/users/äxéj/mentorgraphics/sourcery_codebench_lite_for_arm_eabi/bin/../lib/gcc/arm-none-eabi/4.8.3/thumb2\libgcc.a(_arm_truncdfsf2.o)
  .bss           0x00000000        0x0 c:/users/äxéj/mentorgraphics/sourcery_codebench_lite_for_arm_eabi/bin/../lib/gcc/arm-none-eabi/4.8.3/thumb2\libgcc.a(_arm_truncdfsf2.o)
  .data          0x00000000        0x0 c:/users/äxéj/mentorgraphics/sourcery_codebench_lite_for_arm_eabi/bin/../lib/gcc/arm-none-eabi/4.8.3/thumb2\libgcc.a(_arm_addsubsf3.o)
@@ -901,262 +911,268 @@ Linker script and memory map
 
                 0x20020000                _eram = 0x20020000
 
-.text           0x08000000     0x2184
+.text           0x08000000     0x238c
  *(.isr_vector)
  .isr_vector    0x08000000      0x188 ..\obj\startup_stm32f4xx.o
                 0x08000000                g_pfnVectors
  *(.text*)
  .text.Init_GPIOs
-                0x08000188      0x228 ..\obj\init_GPIOs.o
+                0x08000188      0x210 ..\obj\init_GPIOs.o
                 0x08000188                Init_GPIOs
  .text.RCC_Configuration
-                0x080003b0       0x24 ..\obj\init_GPIOs.o
-                0x080003b0                RCC_Configuration
+                0x08000398       0x24 ..\obj\init_GPIOs.o
+                0x08000398                RCC_Configuration
  .text.Default_Reset_Handler
-                0x080003d4       0x60 ..\obj\startup_stm32f4xx.o
-                0x080003d4                Default_Reset_Handler
-                0x080003d4                Reset_Handler
+                0x080003bc       0x60 ..\obj\startup_stm32f4xx.o
+                0x080003bc                Default_Reset_Handler
+                0x080003bc                Reset_Handler
  .text.Default_Handler
-                0x08000434        0x8 ..\obj\startup_stm32f4xx.o
-                0x08000434                RTC_Alarm_IRQHandler
-                0x08000434                HASH_RNG_IRQHandler
-                0x08000434                EXTI2_IRQHandler
-                0x08000434                TIM8_CC_IRQHandler
-                0x08000434                DebugMon_Handler
-                0x08000434                TIM1_CC_IRQHandler
-                0x08000434                DMA2_Stream5_IRQHandler
-                0x08000434                HardFault_Handler
-                0x08000434                DMA1_Stream5_IRQHandler
-                0x08000434                PVD_IRQHandler
-                0x08000434                SDIO_IRQHandler
-                0x08000434                TAMP_STAMP_IRQHandler
-                0x08000434                PendSV_Handler
-                0x08000434                NMI_Handler
-                0x08000434                CAN2_RX1_IRQHandler
-                0x08000434                EXTI3_IRQHandler
-                0x08000434                TIM8_TRG_COM_TIM14_IRQHandler
-                0x08000434                TIM1_UP_TIM10_IRQHandler
-                0x08000434                TIM8_UP_TIM13_IRQHandler
-                0x08000434                I2C3_ER_IRQHandler
-                0x08000434                EXTI0_IRQHandler
-                0x08000434                I2C2_EV_IRQHandler
-                0x08000434                DMA1_Stream2_IRQHandler
-                0x08000434                CAN1_RX0_IRQHandler
-                0x08000434                FPU_IRQHandler
-                0x08000434                OTG_HS_WKUP_IRQHandler
-                0x08000434                UsageFault_Handler
-                0x08000434                CAN2_SCE_IRQHandler
-                0x08000434                DMA2_Stream2_IRQHandler
-                0x08000434                SPI1_IRQHandler
-                0x08000434                TIM6_DAC_IRQHandler
-                0x08000434                TIM1_BRK_TIM9_IRQHandler
-                0x08000434                DCMI_IRQHandler
-                0x08000434                CAN2_RX0_IRQHandler
-                0x08000434                DMA2_Stream3_IRQHandler
-                0x08000434                USART6_IRQHandler
-                0x08000434                USART3_IRQHandler
-                0x08000434                CRYP_IRQHandler
-                0x08000434                CAN1_RX1_IRQHandler
-                0x08000434                UART5_IRQHandler
-                0x08000434                DMA2_Stream0_IRQHandler
-                0x08000434                TIM4_IRQHandler
-                0x08000434                I2C1_EV_IRQHandler
-                0x08000434                DMA1_Stream6_IRQHandler
-                0x08000434                DMA1_Stream1_IRQHandler
-                0x08000434                UART4_IRQHandler
-                0x08000434                TIM3_IRQHandler
-                0x08000434                RCC_IRQHandler
-                0x08000434                TIM8_BRK_TIM12_IRQHandler
-                0x08000434                EXTI15_10_IRQHandler
-                0x08000434                ADC_IRQHandler
-                0x08000434                DMA1_Stream7_IRQHandler
-                0x08000434                TIM7_IRQHandler
-                0x08000434                CAN2_TX_IRQHandler
-                0x08000434                TIM5_IRQHandler
-                0x08000434                DMA2_Stream7_IRQHandler
-                0x08000434                I2C3_EV_IRQHandler
-                0x08000434                EXTI9_5_IRQHandler
-                0x08000434                RTC_WKUP_IRQHandler
-                0x08000434                ETH_WKUP_IRQHandler
-                0x08000434                SPI2_IRQHandler
-                0x08000434                OTG_HS_EP1_IN_IRQHandler
-                0x08000434                MemManage_Handler
-                0x08000434                DMA1_Stream0_IRQHandler
-                0x08000434                CAN1_TX_IRQHandler
-                0x08000434                SVC_Handler
-                0x08000434                EXTI4_IRQHandler
-                0x08000434                FSMC_IRQHandler
-                0x08000434                ETH_IRQHandler
-                0x08000434                OTG_HS_EP1_OUT_IRQHandler
-                0x08000434                WWDG_IRQHandler
-                0x08000434                TIM2_IRQHandler
-                0x08000434                OTG_FS_WKUP_IRQHandler
-                0x08000434                TIM1_TRG_COM_TIM11_IRQHandler
-                0x08000434                OTG_HS_IRQHandler
-                0x08000434                EXTI1_IRQHandler
-                0x08000434                USART2_IRQHandler
-                0x08000434                I2C2_ER_IRQHandler
-                0x08000434                DMA2_Stream1_IRQHandler
-                0x08000434                CAN1_SCE_IRQHandler
-                0x08000434                FLASH_IRQHandler
-                0x08000434                DMA2_Stream4_IRQHandler
-                0x08000434                BusFault_Handler
-                0x08000434                USART1_IRQHandler
-                0x08000434                OTG_FS_IRQHandler
-                0x08000434                SPI3_IRQHandler
-                0x08000434                DMA1_Stream4_IRQHandler
-                0x08000434                I2C1_ER_IRQHandler
-                0x08000434                DMA2_Stream6_IRQHandler
-                0x08000434                DMA1_Stream3_IRQHandler
+                0x0800041c        0x8 ..\obj\startup_stm32f4xx.o
+                0x0800041c                RTC_Alarm_IRQHandler
+                0x0800041c                HASH_RNG_IRQHandler
+                0x0800041c                EXTI2_IRQHandler
+                0x0800041c                TIM8_CC_IRQHandler
+                0x0800041c                DebugMon_Handler
+                0x0800041c                TIM1_CC_IRQHandler
+                0x0800041c                DMA2_Stream5_IRQHandler
+                0x0800041c                HardFault_Handler
+                0x0800041c                DMA1_Stream5_IRQHandler
+                0x0800041c                PVD_IRQHandler
+                0x0800041c                SDIO_IRQHandler
+                0x0800041c                TAMP_STAMP_IRQHandler
+                0x0800041c                PendSV_Handler
+                0x0800041c                NMI_Handler
+                0x0800041c                CAN2_RX1_IRQHandler
+                0x0800041c                EXTI3_IRQHandler
+                0x0800041c                TIM8_TRG_COM_TIM14_IRQHandler
+                0x0800041c                TIM1_UP_TIM10_IRQHandler
+                0x0800041c                TIM8_UP_TIM13_IRQHandler
+                0x0800041c                I2C3_ER_IRQHandler
+                0x0800041c                EXTI0_IRQHandler
+                0x0800041c                I2C2_EV_IRQHandler
+                0x0800041c                DMA1_Stream2_IRQHandler
+                0x0800041c                CAN1_RX0_IRQHandler
+                0x0800041c                FPU_IRQHandler
+                0x0800041c                OTG_HS_WKUP_IRQHandler
+                0x0800041c                UsageFault_Handler
+                0x0800041c                CAN2_SCE_IRQHandler
+                0x0800041c                DMA2_Stream2_IRQHandler
+                0x0800041c                SPI1_IRQHandler
+                0x0800041c                TIM6_DAC_IRQHandler
+                0x0800041c                TIM1_BRK_TIM9_IRQHandler
+                0x0800041c                DCMI_IRQHandler
+                0x0800041c                CAN2_RX0_IRQHandler
+                0x0800041c                DMA2_Stream3_IRQHandler
+                0x0800041c                USART6_IRQHandler
+                0x0800041c                USART3_IRQHandler
+                0x0800041c                CRYP_IRQHandler
+                0x0800041c                CAN1_RX1_IRQHandler
+                0x0800041c                UART5_IRQHandler
+                0x0800041c                DMA2_Stream0_IRQHandler
+                0x0800041c                TIM4_IRQHandler
+                0x0800041c                I2C1_EV_IRQHandler
+                0x0800041c                DMA1_Stream6_IRQHandler
+                0x0800041c                DMA1_Stream1_IRQHandler
+                0x0800041c                UART4_IRQHandler
+                0x0800041c                TIM3_IRQHandler
+                0x0800041c                RCC_IRQHandler
+                0x0800041c                TIM8_BRK_TIM12_IRQHandler
+                0x0800041c                EXTI15_10_IRQHandler
+                0x0800041c                ADC_IRQHandler
+                0x0800041c                DMA1_Stream7_IRQHandler
+                0x0800041c                TIM7_IRQHandler
+                0x0800041c                CAN2_TX_IRQHandler
+                0x0800041c                TIM5_IRQHandler
+                0x0800041c                DMA2_Stream7_IRQHandler
+                0x0800041c                I2C3_EV_IRQHandler
+                0x0800041c                EXTI9_5_IRQHandler
+                0x0800041c                RTC_WKUP_IRQHandler
+                0x0800041c                ETH_WKUP_IRQHandler
+                0x0800041c                SPI2_IRQHandler
+                0x0800041c                OTG_HS_EP1_IN_IRQHandler
+                0x0800041c                MemManage_Handler
+                0x0800041c                DMA1_Stream0_IRQHandler
+                0x0800041c                CAN1_TX_IRQHandler
+                0x0800041c                SVC_Handler
+                0x0800041c                EXTI4_IRQHandler
+                0x0800041c                FSMC_IRQHandler
+                0x0800041c                ETH_IRQHandler
+                0x0800041c                OTG_HS_EP1_OUT_IRQHandler
+                0x0800041c                WWDG_IRQHandler
+                0x0800041c                TIM2_IRQHandler
+                0x0800041c                OTG_FS_WKUP_IRQHandler
+                0x0800041c                TIM1_TRG_COM_TIM11_IRQHandler
+                0x0800041c                OTG_HS_IRQHandler
+                0x0800041c                EXTI1_IRQHandler
+                0x0800041c                USART2_IRQHandler
+                0x0800041c                I2C2_ER_IRQHandler
+                0x0800041c                DMA2_Stream1_IRQHandler
+                0x0800041c                CAN1_SCE_IRQHandler
+                0x0800041c                FLASH_IRQHandler
+                0x0800041c                DMA2_Stream4_IRQHandler
+                0x0800041c                BusFault_Handler
+                0x0800041c                USART1_IRQHandler
+                0x0800041c                OTG_FS_IRQHandler
+                0x0800041c                SPI3_IRQHandler
+                0x0800041c                DMA1_Stream4_IRQHandler
+                0x0800041c                I2C1_ER_IRQHandler
+                0x0800041c                DMA2_Stream6_IRQHandler
+                0x0800041c                DMA1_Stream3_IRQHandler
  .text.NVIC_SetPriority
-                0x0800043c       0x58 ..\obj\main.o
+                0x08000424       0x58 ..\obj\main.o
  .text.SysTick_Config
-                0x08000494       0x54 ..\obj\main.o
+                0x0800047c       0x54 ..\obj\main.o
  .text.SysTick_Handler
-                0x080004e8       0x48 ..\obj\main.o
-                0x080004e8                SysTick_Handler
+                0x080004d0       0x48 ..\obj\main.o
+                0x080004d0                SysTick_Handler
  .text.init_systick
-                0x08000530       0x3c ..\obj\main.o
-                0x08000530                init_systick
- .text.myDelay  0x0800056c       0x2c ..\obj\main.o
-                0x0800056c                myDelay
- .text.Limit_ul
-                0x08000598       0x3c ..\obj\main.o
-                0x08000598                Limit_ul
- .text.main     0x080005d4      0x1a8 ..\obj\main.o
-                0x080005d4                main
+                0x08000518       0x3c ..\obj\main.o
+                0x08000518                init_systick
+ .text.myDelay  0x08000554       0x2c ..\obj\main.o
+                0x08000554                myDelay
+ .text.main     0x08000580      0x1b0 ..\obj\main.o
+                0x08000580                main
  .text.TM_TIMER_Init
-                0x0800077c       0xe0 ..\obj\main.o
-                0x0800077c                TM_TIMER_Init
- .text.TM_PWM   0x0800085c      0x234 ..\obj\main.o
-                0x0800085c                TM_PWM
+                0x08000730       0x70 ..\obj\main.o
+                0x08000730                TM_TIMER_Init
+ .text.TM_PWM_INIT
+                0x080007a0       0xb8 ..\obj\main.o
+                0x080007a0                TM_PWM_INIT
  .text.RCC_AHB1PeriphClockCmd
-                0x08000a90       0x50 ..\obj\stm32f4xx_rcc.o
-                0x08000a90                RCC_AHB1PeriphClockCmd
+                0x08000858       0x50 ..\obj\stm32f4xx_rcc.o
+                0x08000858                RCC_AHB1PeriphClockCmd
  .text.RCC_APB1PeriphClockCmd
-                0x08000ae0       0x50 ..\obj\stm32f4xx_rcc.o
-                0x08000ae0                RCC_APB1PeriphClockCmd
+                0x080008a8       0x50 ..\obj\stm32f4xx_rcc.o
+                0x080008a8                RCC_APB1PeriphClockCmd
  .text.RCC_APB2PeriphClockCmd
-                0x08000b30       0x50 ..\obj\stm32f4xx_rcc.o
-                0x08000b30                RCC_APB2PeriphClockCmd
+                0x080008f8       0x50 ..\obj\stm32f4xx_rcc.o
+                0x080008f8                RCC_APB2PeriphClockCmd
  .text.GPIO_Init
-                0x08000b80      0x11c ..\obj\stm32f4xx_gpio.o
-                0x08000b80                GPIO_Init
+                0x08000948      0x11c ..\obj\stm32f4xx_gpio.o
+                0x08000948                GPIO_Init
  .text.GPIO_StructInit
-                0x08000c9c       0x34 ..\obj\stm32f4xx_gpio.o
-                0x08000c9c                GPIO_StructInit
+                0x08000a64       0x34 ..\obj\stm32f4xx_gpio.o
+                0x08000a64                GPIO_StructInit
  .text.GPIO_ReadInputDataBit
-                0x08000cd0       0x34 ..\obj\stm32f4xx_gpio.o
-                0x08000cd0                GPIO_ReadInputDataBit
+                0x08000a98       0x34 ..\obj\stm32f4xx_gpio.o
+                0x08000a98                GPIO_ReadInputDataBit
  .text.GPIO_SetBits
-                0x08000d04       0x1c ..\obj\stm32f4xx_gpio.o
-                0x08000d04                GPIO_SetBits
+                0x08000acc       0x1c ..\obj\stm32f4xx_gpio.o
+                0x08000acc                GPIO_SetBits
  .text.GPIO_ResetBits
-                0x08000d20       0x1c ..\obj\stm32f4xx_gpio.o
-                0x08000d20                GPIO_ResetBits
+                0x08000ae8       0x1c ..\obj\stm32f4xx_gpio.o
+                0x08000ae8                GPIO_ResetBits
  .text.GPIO_WriteBit
-                0x08000d3c       0x30 ..\obj\stm32f4xx_gpio.o
-                0x08000d3c                GPIO_WriteBit
+                0x08000b04       0x30 ..\obj\stm32f4xx_gpio.o
+                0x08000b04                GPIO_WriteBit
  .text.GPIO_PinAFConfig
-                0x08000d6c       0x8c ..\obj\stm32f4xx_gpio.o
-                0x08000d6c                GPIO_PinAFConfig
+                0x08000b34       0x8c ..\obj\stm32f4xx_gpio.o
+                0x08000b34                GPIO_PinAFConfig
  .text.SystemInit
-                0x08000df8       0x90 ..\obj\system_stm32f4xx.o
-                0x08000df8                SystemInit
+                0x08000bc0       0x90 ..\obj\system_stm32f4xx.o
+                0x08000bc0                SystemInit
  .text.SystemCoreClockUpdate
-                0x08000e88      0x154 ..\obj\system_stm32f4xx.o
-                0x08000e88                SystemCoreClockUpdate
+                0x08000c50      0x154 ..\obj\system_stm32f4xx.o
+                0x08000c50                SystemCoreClockUpdate
  .text.SetSysClock
-                0x08000fdc      0x17c ..\obj\system_stm32f4xx.o
+                0x08000da4      0x17c ..\obj\system_stm32f4xx.o
  .text.TIM_TimeBaseInit
-                0x08001158       0xec ..\obj\stm32f4xx_tim.o
-                0x08001158                TIM_TimeBaseInit
- .text.TIM_ARRPreloadConfig
-                0x08001244       0x40 ..\obj\stm32f4xx_tim.o
-                0x08001244                TIM_ARRPreloadConfig
- .text.TIM_Cmd  0x08001284       0x40 ..\obj\stm32f4xx_tim.o
-                0x08001284                TIM_Cmd
+                0x08000f20       0xec ..\obj\stm32f4xx_tim.o
+                0x08000f20                TIM_TimeBaseInit
+ .text.TIM_Cmd  0x0800100c       0x40 ..\obj\stm32f4xx_tim.o
+                0x0800100c                TIM_Cmd
  .text.TIM_OC1Init
-                0x080012c4       0xf4 ..\obj\stm32f4xx_tim.o
-                0x080012c4                TIM_OC1Init
+                0x0800104c       0xf4 ..\obj\stm32f4xx_tim.o
+                0x0800104c                TIM_OC1Init
  .text.TIM_OC2Init
-                0x080013b8      0x110 ..\obj\stm32f4xx_tim.o
-                0x080013b8                TIM_OC2Init
+                0x08001140      0x110 ..\obj\stm32f4xx_tim.o
+                0x08001140                TIM_OC2Init
  .text.TIM_OC3Init
-                0x080014c8      0x10c ..\obj\stm32f4xx_tim.o
-                0x080014c8                TIM_OC3Init
+                0x08001250      0x10c ..\obj\stm32f4xx_tim.o
+                0x08001250                TIM_OC3Init
  .text.TIM_OC4Init
-                0x080015d4       0xd0 ..\obj\stm32f4xx_tim.o
-                0x080015d4                TIM_OC4Init
+                0x0800135c       0xd0 ..\obj\stm32f4xx_tim.o
+                0x0800135c                TIM_OC4Init
+ .text.TIM_SetCompare1
+                0x0800142c       0x1c ..\obj\stm32f4xx_tim.o
+                0x0800142c                TIM_SetCompare1
  .text.TIM_OC1PreloadConfig
-                0x080016a4       0x38 ..\obj\stm32f4xx_tim.o
-                0x080016a4                TIM_OC1PreloadConfig
+                0x08001448       0x38 ..\obj\stm32f4xx_tim.o
+                0x08001448                TIM_OC1PreloadConfig
  .text.TIM_OC2PreloadConfig
-                0x080016dc       0x3c ..\obj\stm32f4xx_tim.o
-                0x080016dc                TIM_OC2PreloadConfig
+                0x08001480       0x3c ..\obj\stm32f4xx_tim.o
+                0x08001480                TIM_OC2PreloadConfig
  .text.TIM_OC3PreloadConfig
-                0x08001718       0x38 ..\obj\stm32f4xx_tim.o
-                0x08001718                TIM_OC3PreloadConfig
+                0x080014bc       0x38 ..\obj\stm32f4xx_tim.o
+                0x080014bc                TIM_OC3PreloadConfig
  .text.TIM_OC4PreloadConfig
-                0x08001750       0x3c ..\obj\stm32f4xx_tim.o
-                0x08001750                TIM_OC4PreloadConfig
- .text          0x0800178c      0x370 c:/users/äxéj/mentorgraphics/sourcery_codebench_lite_for_arm_eabi/bin/../lib/gcc/arm-none-eabi/4.8.3/thumb2\libgcc.a(_arm_addsubdf3.o)
-                0x0800178c                __aeabi_drsub
-                0x08001794                __aeabi_dsub
-                0x08001794                __subdf3
-                0x08001798                __aeabi_dadd
-                0x08001798                __adddf3
-                0x08001a10                __floatunsidf
-                0x08001a10                __aeabi_ui2d
-                0x08001a30                __floatsidf
-                0x08001a30                __aeabi_i2d
-                0x08001a54                __aeabi_f2d
-                0x08001a54                __extendsfdf2
-                0x08001a90                __floatundidf
-                0x08001a90                __aeabi_ul2d
-                0x08001aa0                __floatdidf
-                0x08001aa0                __aeabi_l2d
- .text          0x08001afc       0xa0 c:/users/äxéj/mentorgraphics/sourcery_codebench_lite_for_arm_eabi/bin/../lib/gcc/arm-none-eabi/4.8.3/thumb2\libgcc.a(_arm_truncdfsf2.o)
-                0x08001afc                __truncdfsf2
-                0x08001afc                __aeabi_d2f
- .text          0x08001b9c      0x21c c:/users/äxéj/mentorgraphics/sourcery_codebench_lite_for_arm_eabi/bin/../lib/gcc/arm-none-eabi/4.8.3/thumb2\libgcc.a(_arm_addsubsf3.o)
-                0x08001b9c                __aeabi_frsub
-                0x08001ba4                __subsf3
-                0x08001ba4                __aeabi_fsub
-                0x08001ba8                __aeabi_fadd
-                0x08001ba8                __addsf3
-                0x08001d08                __aeabi_ui2f
-                0x08001d08                __floatunsisf
-                0x08001d10                __aeabi_i2f
-                0x08001d10                __floatsisf
-                0x08001d2c                __aeabi_ul2f
-                0x08001d2c                __floatundisf
-                0x08001d3c                __aeabi_l2f
-                0x08001d3c                __floatdisf
- .text          0x08001db8      0x2a0 c:/users/äxéj/mentorgraphics/sourcery_codebench_lite_for_arm_eabi/bin/../lib/gcc/arm-none-eabi/4.8.3/thumb2\libgcc.a(_arm_muldivsf3.o)
-                0x08001db8                __mulsf3
-                0x08001db8                __aeabi_fmul
-                0x08001f20                __aeabi_fdiv
-                0x08001f20                __divsf3
- .text          0x08002058       0xec c:/users/äxéj/mentorgraphics/sourcery_codebench_lite_for_arm_eabi/bin/../lib/gcc/arm-none-eabi/4.8.3/thumb2\libgcc.a(_arm_cmpsf2.o)
-                0x08002058                __gesf2
-                0x08002058                __gtsf2
-                0x08002060                __lesf2
-                0x08002060                __ltsf2
-                0x08002068                __nesf2
-                0x08002068                __eqsf2
-                0x08002068                __cmpsf2
-                0x080020c8                __aeabi_cfrcmple
-                0x080020d0                __aeabi_cfcmpeq
-                0x080020d0                __aeabi_cfcmple
-                0x080020e0                __aeabi_fcmpeq
-                0x080020f4                __aeabi_fcmplt
-                0x08002108                __aeabi_fcmple
-                0x0800211c                __aeabi_fcmpge
-                0x08002130                __aeabi_fcmpgt
- .text          0x08002144       0x40 c:/users/äxéj/mentorgraphics/sourcery_codebench_lite_for_arm_eabi/bin/../lib/gcc/arm-none-eabi/4.8.3/thumb2\libgcc.a(_arm_fixunssfsi.o)
-                0x08002144                __fixunssfsi
-                0x08002144                __aeabi_f2uiz
+                0x080014f4       0x3c ..\obj\stm32f4xx_tim.o
+                0x080014f4                TIM_OC4PreloadConfig
+ .text          0x08001530      0x370 c:/users/äxéj/mentorgraphics/sourcery_codebench_lite_for_arm_eabi/bin/../lib/gcc/arm-none-eabi/4.8.3/thumb2\libgcc.a(_arm_addsubdf3.o)
+                0x08001530                __aeabi_drsub
+                0x08001538                __aeabi_dsub
+                0x08001538                __subdf3
+                0x0800153c                __aeabi_dadd
+                0x0800153c                __adddf3
+                0x080017b4                __floatunsidf
+                0x080017b4                __aeabi_ui2d
+                0x080017d4                __floatsidf
+                0x080017d4                __aeabi_i2d
+                0x080017f8                __aeabi_f2d
+                0x080017f8                __extendsfdf2
+                0x08001834                __floatundidf
+                0x08001834                __aeabi_ul2d
+                0x08001844                __floatdidf
+                0x08001844                __aeabi_l2d
+ .text          0x080018a0      0x424 c:/users/äxéj/mentorgraphics/sourcery_codebench_lite_for_arm_eabi/bin/../lib/gcc/arm-none-eabi/4.8.3/thumb2\libgcc.a(_arm_muldivdf3.o)
+                0x080018a0                __aeabi_dmul
+                0x080018a0                __muldf3
+                0x08001af4                __divdf3
+                0x08001af4                __aeabi_ddiv
+ .text          0x08001cc4       0x40 c:/users/äxéj/mentorgraphics/sourcery_codebench_lite_for_arm_eabi/bin/../lib/gcc/arm-none-eabi/4.8.3/thumb2\libgcc.a(_arm_fixunsdfsi.o)
+                0x08001cc4                __aeabi_d2uiz
+                0x08001cc4                __fixunsdfsi
+ .text          0x08001d04       0xa0 c:/users/äxéj/mentorgraphics/sourcery_codebench_lite_for_arm_eabi/bin/../lib/gcc/arm-none-eabi/4.8.3/thumb2\libgcc.a(_arm_truncdfsf2.o)
+                0x08001d04                __truncdfsf2
+                0x08001d04                __aeabi_d2f
+ .text          0x08001da4      0x21c c:/users/äxéj/mentorgraphics/sourcery_codebench_lite_for_arm_eabi/bin/../lib/gcc/arm-none-eabi/4.8.3/thumb2\libgcc.a(_arm_addsubsf3.o)
+                0x08001da4                __aeabi_frsub
+                0x08001dac                __subsf3
+                0x08001dac                __aeabi_fsub
+                0x08001db0                __aeabi_fadd
+                0x08001db0                __addsf3
+                0x08001f10                __aeabi_ui2f
+                0x08001f10                __floatunsisf
+                0x08001f18                __aeabi_i2f
+                0x08001f18                __floatsisf
+                0x08001f34                __aeabi_ul2f
+                0x08001f34                __floatundisf
+                0x08001f44                __aeabi_l2f
+                0x08001f44                __floatdisf
+ .text          0x08001fc0      0x2a0 c:/users/äxéj/mentorgraphics/sourcery_codebench_lite_for_arm_eabi/bin/../lib/gcc/arm-none-eabi/4.8.3/thumb2\libgcc.a(_arm_muldivsf3.o)
+                0x08001fc0                __mulsf3
+                0x08001fc0                __aeabi_fmul
+                0x08002128                __aeabi_fdiv
+                0x08002128                __divsf3
+ .text          0x08002260       0xec c:/users/äxéj/mentorgraphics/sourcery_codebench_lite_for_arm_eabi/bin/../lib/gcc/arm-none-eabi/4.8.3/thumb2\libgcc.a(_arm_cmpsf2.o)
+                0x08002260                __gesf2
+                0x08002260                __gtsf2
+                0x08002268                __lesf2
+                0x08002268                __ltsf2
+                0x08002270                __nesf2
+                0x08002270                __eqsf2
+                0x08002270                __cmpsf2
+                0x080022d0                __aeabi_cfrcmple
+                0x080022d8                __aeabi_cfcmpeq
+                0x080022d8                __aeabi_cfcmple
+                0x080022e8                __aeabi_fcmpeq
+                0x080022fc                __aeabi_fcmplt
+                0x08002310                __aeabi_fcmple
+                0x08002324                __aeabi_fcmpge
+                0x08002338                __aeabi_fcmpgt
+ .text          0x0800234c       0x40 c:/users/äxéj/mentorgraphics/sourcery_codebench_lite_for_arm_eabi/bin/../lib/gcc/arm-none-eabi/4.8.3/thumb2\libgcc.a(_arm_fixunssfsi.o)
+                0x0800234c                __fixunssfsi
+                0x0800234c                __aeabi_f2uiz
  *(.init)
  *(.fini)
  *crtbegin.o(.ctors)
@@ -1172,35 +1188,35 @@ Linker script and memory map
  *(.rodata*)
  *(.eh_fram e*)
 
-.glue_7         0x08002184        0x0
+.glue_7         0x0800238c        0x0
  .glue_7        0x00000000        0x0 linker stubs
 
-.glue_7t        0x08002184        0x0
+.glue_7t        0x0800238c        0x0
  .glue_7t       0x00000000        0x0 linker stubs
 
-.vfp11_veneer   0x08002184        0x0
+.vfp11_veneer   0x0800238c        0x0
  .vfp11_veneer  0x00000000        0x0 linker stubs
 
-.v4_bx          0x08002184        0x0
+.v4_bx          0x0800238c        0x0
  .v4_bx         0x00000000        0x0 linker stubs
 
-.iplt           0x08002184        0x0
+.iplt           0x0800238c        0x0
  .iplt          0x00000000        0x0 ..\obj\stm32f4xx_syscfg.o
 
-.rel.dyn        0x08002184        0x0
+.rel.dyn        0x0800238c        0x0
  .rel.iplt      0x00000000        0x0 ..\obj\stm32f4xx_syscfg.o
 
 .ARM.extab
  *(.ARM.extab* .gnu.linkonce.armextab.*)
-                0x08002184                __exidx_start = .
+                0x0800238c                __exidx_start = .
 
 .ARM.exidx
  *(.ARM.exidx* .gnu.linkonce.armexidx.*)
-                0x08002184                __exidx_end = .
-                0x08002184                __etext = .
-                0x08002184                _sidata = __etext
+                0x0800238c                __exidx_end = .
+                0x0800238c                __etext = .
+                0x0800238c                _sidata = __etext
 
-.data           0x20000000       0x14 load address 0x08002184
+.data           0x20000000       0x14 load address 0x0800238c
                 0x20000000                __data_start__ = .
                 0x20000000                _sdata = __data_start__
  *(vtable)
@@ -1227,10 +1243,10 @@ Linker script and memory map
                 0x20000014                __data_end__ = .
                 0x20000014                _edata = __data_end__
 
-.igot.plt       0x20000014        0x0 load address 0x08002198
+.igot.plt       0x20000014        0x0 load address 0x080023a0
  .igot.plt      0x00000000        0x0 ..\obj\stm32f4xx_syscfg.o
 
-.bss            0x20000014        0x4 load address 0x08002198
+.bss            0x20000014        0x4 load address 0x080023a0
                 0x20000014                . = ALIGN (0x4)
                 0x20000014                __bss_start__ = .
                 0x20000014                _sbss = __bss_start__
@@ -1249,7 +1265,7 @@ Linker script and memory map
  *(.heap*)
                 0x20000018                __HeapLimit = .
 
-.co_stack       0x20000018      0x800 load address 0x0800219c
+.co_stack       0x20000018      0x800 load address 0x080023a4
                 0x20000018                . = ALIGN (0x8)
  *(.co_stack .co_stack.*)
  .co_stack      0x20000018      0x800 ..\obj\startup_stm32f4xx.o
@@ -1286,23 +1302,23 @@ LOAD c:/users/äxéj/mentorgraphics/sourcery_codebench_lite_for_arm_eabi/bin/../li
 END GROUP
 OUTPUT(test.elf elf32-littlearm)
 
-.debug_info     0x00000000     0x42c4
+.debug_info     0x00000000     0x4244
  .debug_info    0x00000000      0x2b2 ..\obj\init_GPIOs.o
  .debug_info    0x000002b2       0xed ..\obj\startup_stm32f4xx.o
- .debug_info    0x0000039f      0xb93 ..\obj\main.o
- .debug_info    0x00000f32      0xc21 ..\obj\stm32f4xx_rcc.o
- .debug_info    0x00001b53      0x5d6 ..\obj\stm32f4xx_gpio.o
- .debug_info    0x00002129      0x566 ..\obj\system_stm32f4xx.o
- .debug_info    0x0000268f     0x1c35 ..\obj\stm32f4xx_tim.o
+ .debug_info    0x0000039f      0xb13 ..\obj\main.o
+ .debug_info    0x00000eb2      0xc21 ..\obj\stm32f4xx_rcc.o
+ .debug_info    0x00001ad3      0x5d6 ..\obj\stm32f4xx_gpio.o
+ .debug_info    0x000020a9      0x566 ..\obj\system_stm32f4xx.o
+ .debug_info    0x0000260f     0x1c35 ..\obj\stm32f4xx_tim.o
 
-.debug_abbrev   0x00000000      0xa24
+.debug_abbrev   0x00000000      0xa3c
  .debug_abbrev  0x00000000      0x117 ..\obj\init_GPIOs.o
  .debug_abbrev  0x00000117       0xb0 ..\obj\startup_stm32f4xx.o
- .debug_abbrev  0x000001c7      0x21a ..\obj\main.o
- .debug_abbrev  0x000003e1      0x1e3 ..\obj\stm32f4xx_rcc.o
- .debug_abbrev  0x000005c4      0x1a3 ..\obj\stm32f4xx_gpio.o
- .debug_abbrev  0x00000767      0x136 ..\obj\system_stm32f4xx.o
- .debug_abbrev  0x0000089d      0x187 ..\obj\stm32f4xx_tim.o
+ .debug_abbrev  0x000001c7      0x232 ..\obj\main.o
+ .debug_abbrev  0x000003f9      0x1e3 ..\obj\stm32f4xx_rcc.o
+ .debug_abbrev  0x000005dc      0x1a3 ..\obj\stm32f4xx_gpio.o
+ .debug_abbrev  0x0000077f      0x136 ..\obj\system_stm32f4xx.o
+ .debug_abbrev  0x000008b5      0x187 ..\obj\stm32f4xx_tim.o
 
 .debug_aranges  0x00000000      0x5d8
  .debug_aranges
@@ -1329,29 +1345,29 @@ OUTPUT(test.elf elf32-littlearm)
  .debug_ranges  0x00000260       0x20 ..\obj\system_stm32f4xx.o
  .debug_ranges  0x00000280      0x2e8 ..\obj\stm32f4xx_tim.o
 
-.debug_line     0x00000000     0x19ac
- .debug_line    0x00000000      0x21c ..\obj\init_GPIOs.o
- .debug_line    0x0000021c       0xa6 ..\obj\startup_stm32f4xx.o
- .debug_line    0x000002c2      0x2c7 ..\obj\main.o
- .debug_line    0x00000589      0x55d ..\obj\stm32f4xx_rcc.o
- .debug_line    0x00000ae6      0x300 ..\obj\stm32f4xx_gpio.o
- .debug_line    0x00000de6      0x1a0 ..\obj\system_stm32f4xx.o
- .debug_line    0x00000f86      0xa26 ..\obj\stm32f4xx_tim.o
+.debug_line     0x00000000     0x1993
+ .debug_line    0x00000000      0x218 ..\obj\init_GPIOs.o
+ .debug_line    0x00000218       0xa6 ..\obj\startup_stm32f4xx.o
+ .debug_line    0x000002be      0x2b2 ..\obj\main.o
+ .debug_line    0x00000570      0x55d ..\obj\stm32f4xx_rcc.o
+ .debug_line    0x00000acd      0x300 ..\obj\stm32f4xx_gpio.o
+ .debug_line    0x00000dcd      0x1a0 ..\obj\system_stm32f4xx.o
+ .debug_line    0x00000f6d      0xa26 ..\obj\stm32f4xx_tim.o
 
-.debug_str      0x00000000     0x1f36
+.debug_str      0x00000000     0x1ee5
  .debug_str     0x00000000      0x2f2 ..\obj\init_GPIOs.o
                                 0x32e (size before relaxing)
  .debug_str     0x000002f2       0xb5 ..\obj\startup_stm32f4xx.o
                                 0x125 (size before relaxing)
- .debug_str     0x000003a7      0x8d9 ..\obj\main.o
-                                0xa37 (size before relaxing)
- .debug_str     0x00000c80      0x664 ..\obj\stm32f4xx_rcc.o
+ .debug_str     0x000003a7      0x888 ..\obj\main.o
+                                0x9e6 (size before relaxing)
+ .debug_str     0x00000c2f      0x664 ..\obj\stm32f4xx_rcc.o
                                 0x804 (size before relaxing)
- .debug_str     0x000012e4      0x196 ..\obj\stm32f4xx_gpio.o
+ .debug_str     0x00001293      0x196 ..\obj\stm32f4xx_gpio.o
                                 0x457 (size before relaxing)
- .debug_str     0x0000147a       0xb9 ..\obj\system_stm32f4xx.o
+ .debug_str     0x00001429       0xb9 ..\obj\system_stm32f4xx.o
                                 0x35e (size before relaxing)
- .debug_str     0x00001533      0xa03 ..\obj\stm32f4xx_tim.o
+ .debug_str     0x000014e2      0xa03 ..\obj\stm32f4xx_tim.o
                                 0xd84 (size before relaxing)
 
 .comment        0x00000000       0x46
@@ -1383,15 +1399,19 @@ OUTPUT(test.elf elf32-littlearm)
  .ARM.attributes
                 0x00000165       0x19 c:/users/äxéj/mentorgraphics/sourcery_codebench_lite_for_arm_eabi/bin/../lib/gcc/arm-none-eabi/4.8.3/thumb2\libgcc.a(_arm_addsubdf3.o)
  .ARM.attributes
-                0x0000017e       0x19 c:/users/äxéj/mentorgraphics/sourcery_codebench_lite_for_arm_eabi/bin/../lib/gcc/arm-none-eabi/4.8.3/thumb2\libgcc.a(_arm_truncdfsf2.o)
+                0x0000017e       0x19 c:/users/äxéj/mentorgraphics/sourcery_codebench_lite_for_arm_eabi/bin/../lib/gcc/arm-none-eabi/4.8.3/thumb2\libgcc.a(_arm_muldivdf3.o)
  .ARM.attributes
-                0x00000197       0x19 c:/users/äxéj/mentorgraphics/sourcery_codebench_lite_for_arm_eabi/bin/../lib/gcc/arm-none-eabi/4.8.3/thumb2\libgcc.a(_arm_addsubsf3.o)
+                0x00000197       0x19 c:/users/äxéj/mentorgraphics/sourcery_codebench_lite_for_arm_eabi/bin/../lib/gcc/arm-none-eabi/4.8.3/thumb2\libgcc.a(_arm_fixunsdfsi.o)
  .ARM.attributes
-                0x000001b0       0x19 c:/users/äxéj/mentorgraphics/sourcery_codebench_lite_for_arm_eabi/bin/../lib/gcc/arm-none-eabi/4.8.3/thumb2\libgcc.a(_arm_muldivsf3.o)
+                0x000001b0       0x19 c:/users/äxéj/mentorgraphics/sourcery_codebench_lite_for_arm_eabi/bin/../lib/gcc/arm-none-eabi/4.8.3/thumb2\libgcc.a(_arm_truncdfsf2.o)
  .ARM.attributes
-                0x000001c9       0x19 c:/users/äxéj/mentorgraphics/sourcery_codebench_lite_for_arm_eabi/bin/../lib/gcc/arm-none-eabi/4.8.3/thumb2\libgcc.a(_arm_cmpsf2.o)
+                0x000001c9       0x19 c:/users/äxéj/mentorgraphics/sourcery_codebench_lite_for_arm_eabi/bin/../lib/gcc/arm-none-eabi/4.8.3/thumb2\libgcc.a(_arm_addsubsf3.o)
  .ARM.attributes
-                0x000001e2       0x19 c:/users/äxéj/mentorgraphics/sourcery_codebench_lite_for_arm_eabi/bin/../lib/gcc/arm-none-eabi/4.8.3/thumb2\libgcc.a(_arm_fixunssfsi.o)
+                0x000001e2       0x19 c:/users/äxéj/mentorgraphics/sourcery_codebench_lite_for_arm_eabi/bin/../lib/gcc/arm-none-eabi/4.8.3/thumb2\libgcc.a(_arm_muldivsf3.o)
+ .ARM.attributes
+                0x000001fb       0x19 c:/users/äxéj/mentorgraphics/sourcery_codebench_lite_for_arm_eabi/bin/../lib/gcc/arm-none-eabi/4.8.3/thumb2\libgcc.a(_arm_cmpsf2.o)
+ .ARM.attributes
+                0x00000214       0x19 c:/users/äxéj/mentorgraphics/sourcery_codebench_lite_for_arm_eabi/bin/../lib/gcc/arm-none-eabi/4.8.3/thumb2\libgcc.a(_arm_fixunssfsi.o)
 
 .debug_frame    0x00000000     0x12cc
  .debug_frame   0x00000000       0x4c ..\obj\init_GPIOs.o

@@ -122,8 +122,11 @@ void  Init_GPIOs (void)
 	// PC14 : OSC32_IN
 	// PC15 : OSC32_OUT
 	//-----------------------------------------------------------------------------------
-	//PORTDにクロックの供給を開始
-	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA, ENABLE);
+	//PORTCにクロックの供給を開始
+	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOC, ENABLE);
+	//初期化用構造体にパラメータをセットしていくため、いったん初期値に戻す
+	GPIO_StructInit(&GPIO_InitStructure);
+	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOC, ENABLE);
 	//初期化用構造体にパラメータをセットしていくため、いったん初期値に戻す
 	GPIO_StructInit(&GPIO_InitStructure);
 
@@ -133,7 +136,7 @@ void  Init_GPIOs (void)
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
 	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP ;
 	//PORTA設定入力終了。これでGPIOAを設定する
-	GPIO_Init(GPIOA, &GPIO_InitStructure);
+	GPIO_Init(GPIOC, &GPIO_InitStructure);
 	//-----------------------------------------------------------------------------------
 	// GPIO PORT D
 	//-----------------------------------------------------------------------------------
@@ -289,24 +292,13 @@ void  Init_GPIOs (void)
 	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
 	GPIO_Init(GPIOD, &GPIO_InitStructure);
-	//------------------------------------------------------------------------------------------
-	//PORTDにクロックの供給を開始
-	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA, ENABLE);
-	//初期化用構造体にパラメータをセットしていくため、いったん初期値に戻す
-	GPIO_StructInit(&GPIO_InitStructure);
 
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6 | GPIO_Pin_7;
-	//指定したピンを出力に指定する
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
-	//出力ポートのタイプをプッシュプルに指定する
-	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-	GPIO_Init(GPIOA, &GPIO_InitStructure);
 
   GPIO_PinAFConfig(GPIOD,GPIO_PinSource12,GPIO_AF_TIM4);
   GPIO_PinAFConfig(GPIOD,GPIO_PinSource13,GPIO_AF_TIM4);
   GPIO_PinAFConfig(GPIOD,GPIO_PinSource14,GPIO_AF_TIM4);
   GPIO_PinAFConfig(GPIOD,GPIO_PinSource15,GPIO_AF_TIM4);
-  GPIO_PinAFConfig(GPIOA,GPIO_PinSource6,GPIO_AF_TIM3);
+  GPIO_PinAFConfig(GPIOC,GPIO_PinSource6,GPIO_AF_TIM3);
 }
 
 // Configures the different system clocks.
