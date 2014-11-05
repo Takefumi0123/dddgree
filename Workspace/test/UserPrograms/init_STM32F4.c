@@ -1,5 +1,4 @@
-#include "init_GPIOs.h"
-
+#include "init_STM32F4.h"
 
 //-----------------------------------------------------------------------------------------
 // STM32F4 Discoveryの場合、基板内部で接続している信号があるため、コネクタ外部で使用できない信号が多数あります。
@@ -45,24 +44,15 @@ void  Init_GPIOs (void)
 
 	// PA15 : SCS(SPI1_NSS)
 	//-----------------------------------------------------------------------------------
-	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA, ENABLE);
-	//初期化用構造体にパラメータをセットしていくため、いったん初期値に戻す
 	GPIO_StructInit(&GPIO_InitStructure);
-	//設定するピンを指定する（スイッチのピン・アクティブハイ）
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0 | GPIO_Pin_1 | GPIO_Pin_2 | GPIO_Pin_3
 								| GPIO_Pin_4 | GPIO_Pin_5 | GPIO_Pin_6 | GPIO_Pin_7
 								| GPIO_Pin_8 | GPIO_Pin_9 | GPIO_Pin_10 | GPIO_Pin_11
 								| GPIO_Pin_12 | GPIO_Pin_15;
-	//指定したピンを入力に指定する
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
-	//プルアップを使用しない
 	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
-	//GPIOのスピードを100MHz（最高速）にセットする
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
-
-	//PORTA設定入力終了。これでGPIOAを設定する
 	GPIO_Init(GPIOA, &GPIO_InitStructure);
-
 
 	//-----------------------------------------------------------------------------------
 	// GPIO PORT B
@@ -90,13 +80,6 @@ void  Init_GPIOs (void)
 	// PB14 : SPI2_MISO
 	// PB15 : SPI2_MOSI
 	//-----------------------------------------------------------------------------------
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0 | GPIO_Pin_1 | GPIO_Pin_2 | GPIO_Pin_3
-								| GPIO_Pin_4 | GPIO_Pin_5 | GPIO_Pin_6 | GPIO_Pin_7
-								| GPIO_Pin_8 | GPIO_Pin_9 | GPIO_Pin_10 | GPIO_Pin_11
-								| GPIO_Pin_12 | GPIO_Pin_13 | GPIO_Pin_14 | GPIO_Pin_15;
-
-	GPIO_Init(GPIOB, &GPIO_InitStructure);
-
 	//-----------------------------------------------------------------------------------
 	// GPIO PORT C
 	//-----------------------------------------------------------------------------------
@@ -122,20 +105,15 @@ void  Init_GPIOs (void)
 	// PC14 : OSC32_IN
 	// PC15 : OSC32_OUT
 	//-----------------------------------------------------------------------------------
-	//PORTCにクロックの供給を開始
-	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOC, ENABLE);
-	//初期化用構造体にパラメータをセットしていくため、いったん初期値に戻す
-	GPIO_StructInit(&GPIO_InitStructure);
-	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOC, ENABLE);
-	//初期化用構造体にパラメータをセットしていくため、いったん初期値に戻す
-	GPIO_StructInit(&GPIO_InitStructure);
 
+	//PWMモード設定
+	//PC6 PC7
+	GPIO_StructInit(&GPIO_InitStructure);
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6 | GPIO_Pin_7;
 	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
 	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP ;
-	//PORTA設定入力終了。これでGPIOAを設定する
 	GPIO_Init(GPIOC, &GPIO_InitStructure);
 	//-----------------------------------------------------------------------------------
 	// GPIO PORT D
@@ -160,33 +138,20 @@ void  Init_GPIOs (void)
 	// PD14 : Port1_bit6
 	// PD15 : Port1_bit7
 	//-----------------------------------------------------------------------------------
-	//PORTDにクロックの供給を開始
-	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOD, ENABLE);
-	//初期化用構造体にパラメータをセットしていくため、いったん初期値に戻す
 	GPIO_StructInit(&GPIO_InitStructure);
-	//設定するピンを指定する（４つのLED）
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0 | GPIO_Pin_1 | GPIO_Pin_2 | GPIO_Pin_3
 								| GPIO_Pin_4 | GPIO_Pin_5 | GPIO_Pin_6 | GPIO_Pin_7
 								| GPIO_Pin_8 | GPIO_Pin_9 | GPIO_Pin_10 | GPIO_Pin_11;
-	//指定したピンを出力に指定する
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
-	//出力ポートのタイプをプッシュプルに指定する
 	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-	//プルアップを使用しない
 	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
-	//GPIOのスピードを100MHz（最高速）にセットする
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
-
-	//PORTD設定入力終了。これでGPIODを設定する
 	GPIO_Init(GPIOD, &GPIO_InitStructure);
 
-//LEDの設定
+	//LEDの設定
 	//設定するピンを指定する（４つのLED）
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_12 | GPIO_Pin_13 | GPIO_Pin_14 | GPIO_Pin_15;
-	//指定したピンを出力に指定する
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
-
-	//PORTD設定入力終了。これでGPIODを設定する
 	GPIO_Init(GPIOD, &GPIO_InitStructure);
 
 	//-----------------------------------------------------------------------------------
@@ -214,91 +179,35 @@ void  Init_GPIOs (void)
 
 	// PE15 : DISP(LCD I/F2)
 	//-----------------------------------------------------------------------------------
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0 | GPIO_Pin_1 | GPIO_Pin_2 | GPIO_Pin_3
-								| GPIO_Pin_4 | GPIO_Pin_5 | GPIO_Pin_6 | GPIO_Pin_7
-								| GPIO_Pin_8 | GPIO_Pin_9 | GPIO_Pin_10 | GPIO_Pin_11
-								| GPIO_Pin_12 | GPIO_Pin_13 | GPIO_Pin_14 | GPIO_Pin_15;
 
-	GPIO_Init(GPIOE, &GPIO_InitStructure);
-	//--------------------------------------------------------------------------------------------
-
-
-	//----------------------------------------------------
-	// Initialize for input User Switch
-	//----------------------------------------------------
-	// Configure User Button pin as input
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0;
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
-	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_DOWN;
-	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-
-	GPIO_Init(GPIOA, &GPIO_InitStructure);
-
-
-	//---------------------------------------------------------------------
-	// USB FS OFF : 電源ON時、一旦OFF
-	//---------------------------------------------------------------------
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_11 | GPIO_Pin_12;
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
-	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
-	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-
-	GPIO_Init(GPIOA, &GPIO_InitStructure);
-	//---------------------------------------------------------------------
-
-
-	//------------------------------------------------------------------------------------------
-	// DiscoveryKit
-	//------------------------------------------------------------------------------------------
-
-	//------------------------------------------------------------------------------------------
-	// DiscoveryKitのときコネクタに接続されている外部信号を使用するため内部のデバイスをリセット状態にする。
-	//------------------------------------------------------------------------------------------
-	// Reset Audio IC
-	//------------------------------------------------------------------------------------------
-	// PD4 : I/O_bit4
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_4;
-	GPIO_Init(GPIOD, &GPIO_InitStructure);
-
-
-	// Reset Audio IC
-	GPIO_WriteBit(GPIOD, GPIO_Pin_4, Bit_RESET);
-	//------------------------------------------------------------------------------------------
-
-
-
-	//-----------------------------------------------------------
-	// DiscoveryKit : OTG_FS_PowerSwitch
-	//-----------------------------------------------------------
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0;
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
+	//GPIOAのPIN2を出力に設定
+	//PA2	シリアル送信
+	GPIO_StructInit(&GPIO_InitStructure);
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_2 ;
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
 	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
 	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
-	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-	GPIO_Init(GPIOC, &GPIO_InitStructure);
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
+	GPIO_Init(GPIOA, &GPIO_InitStructure);
 
-	//----------------------------------------
-	// OTG_FS_PowerSwitch OFF
-	//----------------------------------------
-	GPIO_SetBits(GPIOC, GPIO_Pin_0);
-	//----------------------------------------
+	//PB6	PB7をエンコーダポートに設定
+	GPIO_StructInit(&GPIO_InitStructure);
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6| GPIO_Pin_7;
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
+    GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+    GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+    GPIO_Init(GPIOB, &GPIO_InitStructure);
 
-
-	//-----------------------------------------------------------
-	// PD5 :Detect OTG_FS_OverCurrent
-	//-----------------------------------------------------------
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_5;
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
-	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
-	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
-	GPIO_Init(GPIOD, &GPIO_InitStructure);
-
-
-  GPIO_PinAFConfig(GPIOD,GPIO_PinSource12,GPIO_AF_TIM4);
-  GPIO_PinAFConfig(GPIOD,GPIO_PinSource13,GPIO_AF_TIM4);
-  GPIO_PinAFConfig(GPIOD,GPIO_PinSource14,GPIO_AF_TIM4);
-  GPIO_PinAFConfig(GPIOD,GPIO_PinSource15,GPIO_AF_TIM4);
-  GPIO_PinAFConfig(GPIOC,GPIO_PinSource6,GPIO_AF_TIM3);
+	//PINをオルタネィテブファンクションに割り当て
+	GPIO_PinAFConfig(GPIOD,GPIO_PinSource12,GPIO_AF_TIM4);
+	GPIO_PinAFConfig(GPIOD,GPIO_PinSource13,GPIO_AF_TIM4);
+	GPIO_PinAFConfig(GPIOD,GPIO_PinSource14,GPIO_AF_TIM4);
+	GPIO_PinAFConfig(GPIOD,GPIO_PinSource15,GPIO_AF_TIM4);
+	GPIO_PinAFConfig(GPIOC,GPIO_PinSource6,GPIO_AF_TIM3);
+	GPIO_PinAFConfig(GPIOA,GPIO_PinSource2,GPIO_AF_USART2);
+//	GPIO_PinAFConfig(GPIOB,GPIO_PinSource6,GPIO_AF_TIM4);
+//	GPIO_PinAFConfig(GPIOB,GPIO_PinSource7,GPIO_AF_TIM4);
 }
 
 // Configures the different system clocks.
@@ -310,8 +219,72 @@ void RCC_Configuration(void)
 			| RCC_AHB1Periph_GPIOE | RCC_AHB1Periph_GPIOH, ENABLE);
 
 	/* Enable PWR clock */
-	RCC_APB1PeriphClockCmd(RCC_APB1Periph_PWR, ENABLE);
+	RCC_APB1PeriphClockCmd(RCC_APB1Periph_PWR | RCC_APB1Periph_USART2, ENABLE);
 
 	/* Enable SYSCFG */
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_SYSCFG , ENABLE);
+}
+
+void Init_Systick(float	time){
+	SystemCoreClockUpdate();
+
+	if(SysTick_Config(SystemCoreClock*time)){
+
+	}
+}
+
+void Init_Timer(void) {
+    TIM_TimeBaseInitTypeDef TIM_BaseStruct;
+
+    RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM3, ENABLE);
+    RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM4, ENABLE);
+
+    TIM_BaseStruct.TIM_Prescaler = 210000;
+    TIM_BaseStruct.TIM_CounterMode = TIM_CounterMode_Up;
+    TIM_BaseStruct.TIM_Period = PWM_PERIOD; // 10kHz PWM
+    TIM_BaseStruct.TIM_ClockDivision = TIM_CKD_DIV4;
+    TIM_BaseStruct.TIM_RepetitionCounter = 0;
+
+    TIM_TimeBaseInit(TIM3, &TIM_BaseStruct);
+    TIM_TimeBaseInit(TIM4, &TIM_BaseStruct);
+
+    TIM_Cmd(TIM3, ENABLE);
+    TIM_Cmd(TIM4, ENABLE);
+}
+
+void Init_Pwm(void) {
+    TIM_OCInitTypeDef TIM_OCStruct;
+
+    TIM_OCStruct.TIM_OCMode = TIM_OCMode_PWM1;
+    TIM_OCStruct.TIM_OutputState = TIM_OutputState_Enable;
+    TIM_OCStruct.TIM_OCPolarity = TIM_OCPolarity_High;
+
+    TIM_OCStruct.TIM_Pulse = PWM_PERIOD * 0.0;
+    TIM_OC1Init(TIM4, &TIM_OCStruct);
+    TIM_OC1PreloadConfig(TIM4, TIM_OCPreload_Enable);
+    TIM_OC2Init(TIM4, &TIM_OCStruct);
+    TIM_OC2PreloadConfig(TIM4, TIM_OCPreload_Enable);
+    TIM_OC3Init(TIM4, &TIM_OCStruct);
+    TIM_OC3PreloadConfig(TIM4, TIM_OCPreload_Enable);
+    TIM_OC4Init(TIM4, &TIM_OCStruct);
+    TIM_OC4PreloadConfig(TIM4, TIM_OCPreload_Enable);
+    TIM_OC1Init(TIM3, &TIM_OCStruct);
+    TIM_OC1PreloadConfig(TIM3, TIM_OCPreload_Enable);
+}
+
+void Init_USART(void){
+	//USART初期化用構造体を作る
+	USART_InitTypeDef USART_InitStructure;
+
+	//USART2を38400bps,8bit,ストップビット1,パリティなし,フロー制御なし,送受信有効に設定
+	USART_InitStructure.USART_BaudRate = 38400;
+	USART_InitStructure.USART_WordLength = USART_WordLength_8b;
+	USART_InitStructure.USART_StopBits = USART_StopBits_1;
+	USART_InitStructure.USART_Parity = USART_Parity_No;
+	USART_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
+	USART_InitStructure.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;
+	USART_Init(USART2, &USART_InitStructure);
+
+	//USART2を有効化
+	USART_Cmd(USART2, ENABLE);
 }
