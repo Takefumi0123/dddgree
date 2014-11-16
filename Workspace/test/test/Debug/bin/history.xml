@@ -1,14 +1,14 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <history>
    <processor signature="arm-none-eabi-gcc -mcpu=cortex-m4 -mthumb -g -nostartfiles -Map=test.map -O0 --gc-sections -lm -lgcc -lc -LC:\CooCox\CoIDE\configuration\ProgramData\test -TC:\CooCox\CoIDE\configuration\ProgramData\test/link.ld -g">
-      <target file="test.elf" lastModified="14984b6359d">
+      <target file="test.elf" lastModified="1497fc8d5ec">
          <source file="..\obj\stm32f4xx_syscfg.o" lastModified="149173ed27a"/>
-         <source file="..\obj\init_STM32F4.o" lastModified="14984b632cd"/>
+         <source file="..\obj\init_STM32F4.o" lastModified="1497fc4557e"/>
          <source file="..\obj\stm32f4xx_usart.o" lastModified="149173ed318"/>
          <source file="..\obj\stm32f4xx_pwr.o" lastModified="149173ed434"/>
          <source file="..\obj\startup_stm32f4xx.o" lastModified="149173ed471"/>
          <source file="..\obj\stm32f4xx_crc.o" lastModified="149173ed4d2"/>
-         <source file="..\obj\main.o" lastModified="14984b63331"/>
+         <source file="..\obj\main.o" lastModified="1497fc5d394"/>
          <source file="..\obj\stm32f4xx_rcc.o" lastModified="149173ed5bf"/>
          <source file="..\obj\stm32f4xx_adc.o" lastModified="149173ed654"/>
          <source file="..\obj\stm32f4xx_fsmc.o" lastModified="149173ed6c8"/>

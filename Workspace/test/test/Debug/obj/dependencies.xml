@@ -15,11 +15,17 @@
          <include file="..\..\..\cmsis_lib\include\stm32f4xx_syscfg.h"/>
          <include file="..\..\..\cmsis_lib\include\stm32f4xx_rcc.h"/>
       </source>
+      <source file="..\..\..\UserPrograms\init_system_stm32f4.h" lastModified="1497f8148e8">
+         <include file="..\..\..\cmsis_boot\stm32f4xx.h"/>
+         <include file="..\..\..\UserPrograms\select_port_on_module.h"/>
+      </source>
       <source file="..\..\..\cmsis_lib\source\misc.c" lastModified="149147f942f">
          <include file="..\..\..\cmsis_lib\include\misc.h"/>
       </source>
       <source file="..\..\..\cmsis_lib\source\stm32f4xx_rcc.c" lastModified="148f3f7d7ef">
          <include file="..\..\..\cmsis_lib\include\stm32f4xx_rcc.h"/>
+      </source>
+      <source file="..\..\..\UserPrograms\select_port_on_module.h" lastModified="1497f81839f">
       </source>
       <source file="..\..\..\cmsis_lib\source\stm32f4xx_pwr.c" lastModified="148f3f7e51b">
          <include file="..\..\..\cmsis_lib\include\stm32f4xx_pwr.h"/>
@@ -57,9 +63,8 @@
          <include file="..\..\..\cmsis_boot\system_stm32f4xx.h"/>
          <include file="..\..\..\cmsis_boot\stm32f4xx_conf.h"/>
       </source>
-      <source file="..\..\..\UserPrograms\init_STM32F4.h" lastModified="14984b63079">
+      <source file="..\..\..\UserPrograms\init_STM32F4.h" lastModified="1497f94b364">
          <include file="..\..\..\cmsis_boot\stm32f4xx_conf.h"/>
-         <include file="..\..\..\cmsis_lib\include\misc.h"/>
       </source>
       <source file="..\..\..\cmsis_lib\source\stm32f4xx_crc.c" lastModified="149147c9422">
          <include file="..\..\..\cmsis_lib\include\stm32f4xx_crc.h"/>
@@ -67,7 +72,7 @@
       <source file="..\..\..\cmsis_lib\include\stm32f4xx_crc.h" lastModified="149147c941e">
          <include file="..\..\..\cmsis_boot\stm32f4xx.h"/>
       </source>
-      <source file="..\..\..\UserPrograms\init_STM32F4.c" lastModified="14984b616da">
+      <source file="..\..\..\UserPrograms\init_STM32F4.c" lastModified="1497fc45242">
          <include file="..\..\..\UserPrograms\init_STM32F4.h"/>
       </source>
       <source file="..\..\..\cmsis_lib\include\stm32f4xx_exti.h" lastModified="148f3f80ae4">
@@ -106,7 +111,7 @@
       <source file="..\..\..\cmsis_lib\include\stm32f4xx_spi.h" lastModified="1497f832815">
          <include file="..\..\..\cmsis_boot\stm32f4xx.h"/>
       </source>
-      <source file="..\..\..\main.c" lastModified="14984b61e35">
+      <source file="..\..\..\main.c" lastModified="1497fc5d46f">
          <include file="..\..\..\cmsis_boot\stm32f4xx.h"/>
          <include file="..\..\..\cmsis_boot\stm32f4xx_conf.h"/>
          <include file="..\..\..\cmsis_lib\include\stm32f4xx_adc.h"/>

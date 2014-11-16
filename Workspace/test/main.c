@@ -1,6 +1,5 @@
 //include StandardLibraly
 #include <stdio.h>
-#include <inttypes.h>
 
 //include Repository
 #include "stm32f4xx.h"
@@ -30,13 +29,7 @@
 
 #define	ADD_TIMER_COUNT	0.001
 
-#define ADC3_DR_ADDRESS     ((uint32_t)0x4001224C)	//ADC3の変換結果レジスタのアドレス
-
 float	g_timer_count = 0.0;
-int		g_encl_ou = 0;
-
-uint16_t ADC3ConvertedValue[2];	//変換結果がDMA転送される配列
-int ADvoltage[2];
 
 void All_Setup(void);
 void myDelay(void);
@@ -63,21 +56,6 @@ void All_Setup(void){
 	Init_Timer();
 
 	Init_Pwm();
-
-	Init_Encoder();
-
-	ADC3_DMA_Config(ADC3ConvertedValue);
-
-	ADC_SoftwareStartConv(ADC3);
-}
-
-void TIM2_IRQHandler(void){
-	if((TIM2->CR1) >> 4){
-		g_encl_ou-=1;
-	}else{
-		g_encl_ou+=1;
-	}
-	TIM_ClearITPendingBit(TIM2,TIM_IT_Update);
 }
 
 /******************************************************************************
@@ -106,9 +84,8 @@ int main(void){
 	char	string[20] = {0};
 
 	All_Setup();
-	TIM_SetCounter(TIM2,0);
-	g_encl_ou = 0;
-/*	while(1){
+
+	while(1){
 		if(g_timer_count >= 1.0){
 			g_timer_count = 0.0;
 			if(i>8){
@@ -132,18 +109,6 @@ int main(void){
 //	        USART_SendData(USART2,'A');
 		}
 		change_revolution(GPIO_ReadInputDataBit(PORT_PUSH_SW, PIN_PUSH_SW));
-	}
-*/
-	while(1){
-		if(g_timer_count >= 0.005){
-			g_timer_count = 0.0;
-			//読み出し結果を電圧に変換して結果を配列に入れる
-			ADvoltage[0] = ADC3ConvertedValue[0] *3300/0xFFF;
-			ADvoltage[1] = ADC3ConvertedValue[1] *3300/0xFFF;
-			i = TIM_GetCounter(TIM2)+g_encl_ou*65535;
-	        sprintf(string,"i = %d,%d\n\r",ADvoltage[0],ADvoltage[1]);
-	        USART2_SendString(string);
-		}
 	}
 }
 
