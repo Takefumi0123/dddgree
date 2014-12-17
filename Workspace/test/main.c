@@ -1,4 +1,4 @@
-//include StandardLibraly
+ //include StandardLibraly
 #include <stdio.h>
 
 //include Repository
